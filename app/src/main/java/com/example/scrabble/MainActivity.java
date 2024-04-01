@@ -1,6 +1,7 @@
 package com.example.scrabble;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,7 +17,6 @@ public class MainActivity extends Activity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Здесь код для запуска игры, например:
                 startGame();
             }
         });
@@ -25,7 +25,6 @@ public class MainActivity extends Activity {
         statsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Здесь код для отображения статистики, например:
                 showStats();
             }
         });
@@ -34,17 +33,18 @@ public class MainActivity extends Activity {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Здесь код для выхода из приложения:
-                finish();
+                finish(); // Завершаем текущую активность, выходя из приложения
             }
         });
     }
 
     private void startGame() {
-        // Здесь код для запуска игры
+        Intent intent = new Intent(MainActivity.this, GameActivity.class);
+        startActivity(intent);
     }
 
     private void showStats() {
-        // Здесь код для отображения статистики
+        Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+        startActivity(intent);
     }
 }
