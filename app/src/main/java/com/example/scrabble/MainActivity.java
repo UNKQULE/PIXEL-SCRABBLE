@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish(); // Завершаем текущую активность, выходя из приложения
+                finish();
             }
         });
     }

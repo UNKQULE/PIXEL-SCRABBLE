@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DefaultPlace">
+        <item name="android:background">@drawable/default_image</item>
+    </style>
+    <style name="StartPlace">
+        <item name="android:background">@drawable/start_image</item>
+    </style>
+    <style name="L2Place">
+        <item name="android:background">@drawable/l2_image</item>
+    </style>
+    <style name="L3Place">
+        <item name="android:background">@drawable/l3_image</item>
+    </style>
+    <style name="W3Place">
+        <item name="android:background">@drawable/w3_image</item>
+    </style>
+    <style name="UserCard">
+        <item name="android:background">@drawable/dice_image</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

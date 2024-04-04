@@ -1,36 +1,67 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!-- Фон игрового поля -->
-
-    <!-- Игровое поле -->
-    <ImageView
-        android:id="@+id/game_board_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background_image2" />
-
-    <ImageView
-        android:id="@+id/gameboard_image"
-        android:layout_width="375dp"
-        android:layout_height="375dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="200dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_image2">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:src="@drawable/gameboard_image" />
-
-
-    <ImageButton
-        android:id="@+id/return_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="630dp"
-        android:scaleType="centerInside"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/return_button_image" />
-</RelativeLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/topConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.2">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <GridLayout
+        android:background="@drawable/gameboard_image"
+        app:layout_constraintTop_toBottomOf="@id/topConstraint"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/gridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.49"
+        android:layout_weight="1"
+        android:columnCount="9"
+        android:rowCount="9"
+        android:orientation="horizontal">
+    </GridLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/botConstraint"
+        android:paddingTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <Button
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/enterBtn"
+            app:backgroundTint="@color/grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ENTER"
+            android:textColor="@color/white"
+            android:gravity="center" />
+        <Button
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/returnBtn"
+            app:backgroundTint="@color/red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RETURN"
+            android:textColor="@color/white"
+            android:gravity="center" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
