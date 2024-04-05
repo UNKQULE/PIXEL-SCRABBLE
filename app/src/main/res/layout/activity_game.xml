@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -43,25 +44,31 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintBottom_toBottomOf="parent">
-        <Button
+
+        <ImageButton
+            android:id="@+id/enter_button_image"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            android:src="@drawable/enter_button_image"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/enterBtn"
-            app:backgroundTint="@color/grey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ENTER"
-            android:textColor="@color/white"
-            android:gravity="center" />
-        <Button
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageButton
+            android:id="@+id/return_button_image"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            android:src="@drawable/return_button_image"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:id="@+id/returnBtn"
-            app:backgroundTint="@color/red"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RETURN"
-            android:textColor="@color/white"
-            android:gravity="center" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

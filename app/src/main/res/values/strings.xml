@@ -3,4 +3,6 @@
     <string name="play">PLAY</string>
     <string name="stats">STATS</string>
     <string name="exit">EXIT</string>
+    <string name="enter">ENTER</string>
+    <string name="Return">RETURN</string>
 </resources>

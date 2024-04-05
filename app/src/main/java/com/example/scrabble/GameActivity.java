@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
-    private final char[][] desk = new char[15][15];
+    private final char[][] desk = new char[9][9];
 
     private final List<Pair<Integer, Integer>> w3 = Arrays.asList(
             new Pair<>(0, 0),
@@ -86,11 +87,8 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        //отрисовываем руку
-
         ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
 
-        // Массив для хранения ссылок на кнопки
         Button[] buttons = new Button[7];
 
         for (int i = 0; i < buttons.length; i++) {
@@ -101,7 +99,7 @@ public class GameActivity extends AppCompatActivity {
             char text = Game.getRandomChar();
             buttons[finalI].setText(String.valueOf(text));
             buttons[i].setOnClickListener(v -> {
-                // Обработчик нажатий для кнопки
+
                 if(prevBtn != 0 & prevBtn != buttons[finalI].getId()) {
                     Button prevButton = findViewById(prevBtn);
                     ViewGroup.LayoutParams prevLayoutParams = prevButton.getLayoutParams();
@@ -161,8 +159,8 @@ public class GameActivity extends AppCompatActivity {
         constraintSet.applyTo(constraintLayout);
 
         //кнопки ENTER и RETRUN
-        Button enterBtn = findViewById(R.id.enterBtn);
-        Button returnBtn = findViewById(R.id.returnBtn);
+        ImageButton enterBtn = findViewById(R.id.enter_button_image);
+        ImageButton returnBtn = findViewById(R.id.return_button_image);
 
         returnBtn.setOnClickListener(v -> {
             if(count != 0) {
@@ -251,7 +249,7 @@ public class GameActivity extends AppCompatActivity {
                         Button prevButton = findViewById(prevBtn);
                         prevButton.setVisibility(View.GONE);
                         if(firstWordFlag && row == 4 && col == 4) {
-                            Button enterBtn = findViewById(R.id.enterBtn);
+                            ImageButton enterBtn = findViewById(R.id.enter_button_image);
                             enterBtn.setBackgroundColor(Color.GREEN);
                             firstWordFlag = false;
                         }
@@ -265,7 +263,7 @@ public class GameActivity extends AppCompatActivity {
                     Button prevButton = findViewById(prevBtn);
                     prevButton.setVisibility(View.GONE);
                     if(firstWordFlag && row == 4 && col == 4) {
-                        Button enterBtn = findViewById(R.id.enterBtn);
+                        ImageButton enterBtn = findViewById(R.id.enter_button_image);
                         enterBtn.setBackgroundColor(Color.GREEN);
                         firstWordFlag = false;
                     }
