@@ -15,8 +15,8 @@
     <style name="W3Place">
         <item name="android:background">@drawable/w3_image</item>
     </style>
-    <style name="UserCard">
-        <item name="android:background">@drawable/dice_image</item>
+    <style name="HandTile">
+        <item name="android:background">@drawable/tile_image</item>
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center</item>
     </style>
