@@ -16,6 +16,20 @@
         android:layout_height="0dp"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.2">
+
+        <ImageButton
+            android:id="@+id/menu_image"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:adjustViewBounds="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            android:src="@drawable/menu_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     <GridLayout
         android:background="@drawable/gameboard_image"
@@ -44,6 +58,7 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintBottom_toBottomOf="parent">
+
 
         <ImageButton
             android:id="@+id/enter_button_image"
