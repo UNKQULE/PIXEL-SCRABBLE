@@ -1,5 +1,6 @@
 package com.example.scrabble;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,6 +55,10 @@ public class GameActivity extends AppCompatActivity {
     private char selectedChar = '0';
     private int placedTilesCount = 0;
     private boolean isFirstWord = true;
+
+    private boolean enter = false;
+
+    private int wordCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,12 +144,18 @@ public class GameActivity extends AppCompatActivity {
                         handButton.setVisibility(View.VISIBLE);
                     }
                 }
+                if(wordCount == 0) {
+                    isFirstWord = true;
+                }
                 placedTilesCount = 0;
+                enterBtn.setBackgroundColor(Color.GRAY);
+                enter = false;
             }
         });
 
         enterBtn.setOnClickListener(v -> {
-            if (!isFirstWord) {
+            if (enter) {
+                wordCount++;
                 Game.endTurn();
                 placedTilesCount = 0;
                 for (Button handTile : handTiles) {
@@ -154,6 +165,8 @@ public class GameActivity extends AppCompatActivity {
                         handTile.setVisibility(View.VISIBLE);
                     }
                 }
+                enterBtn.setBackgroundColor(Color.GRAY);
+                enter = false;
             }
         });
     }
@@ -165,24 +178,18 @@ public class GameActivity extends AppCompatActivity {
                 if (prevSelectedHandTileId != -1) {
                     findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
                 }
-                if (isFirstWord && row == 4 && col == 4) {
-                    findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
-                    isFirstWord = false;
-                }
                 selectedChar = '0';
                 placedTilesCount++;
+                turn();
             } else {
                 if (Game.hasNeighbours(gameBoard, row, col)) {
                     Game.addTile(boardCell, selectedChar, row, col, gameBoard);
                     if (prevSelectedHandTileId != -1) {
                         findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
                     }
-                    if (isFirstWord && row == 4 && col == 4) {
-                        findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
-                        isFirstWord = false;
-                    }
                     selectedChar = '0';
                     placedTilesCount++;
+                    turn();
                 }
             }
 
@@ -214,7 +221,6 @@ public class GameActivity extends AppCompatActivity {
 
     private Button getBoardCell(int row, int col) {
         Pair<Integer, Integer> pos = new Pair<>(row, col);
-        boolean defFlag = true;
         if(w3.contains(pos)) {
             return new Button(new android.view.ContextThemeWrapper(this, R.style.W3Place), null, 0);
         }
@@ -228,5 +234,25 @@ public class GameActivity extends AppCompatActivity {
             return new Button(new android.view.ContextThemeWrapper(this, R.style.StartPlace), null, 0);
         }
         return new Button(new android.view.ContextThemeWrapper(this, R.style.DefaultPlace), null, 0);
+    }
+
+    private void turn () {
+        boolean flag = false;
+        if(!isFirstWord && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
+            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
+            enter = true;
+            flag = true;
+        }
+        if(isFirstWord && gameBoard[4][4] != 0 && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
+            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
+            isFirstWord = false;
+            enter = true;
+            flag = true;
+        }
+        if(!flag) {
+            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GRAY);
+            enter = false;
+        }
+
     }
 }
