@@ -27,7 +27,7 @@ public class Game {
 
     private static final List<Pair<Integer, Integer>> cellPosList;
 
-    private static String direction;
+    private static String direction = "none";
 
 
     static  {
@@ -36,7 +36,7 @@ public class Game {
         tileList = new ArrayList<>();
         cellBackgroundList = new ArrayList<>();
         cellPosList = new ArrayList<>();
-        initializeList(); // Инициализация списка символами
+        initializeList();
     }
 
     private static void initializeList() {
@@ -170,6 +170,9 @@ public class Game {
         StringBuilder sb = new StringBuilder();
         int lastPosRow = cellPosList.get(cellPosList.size() - 1).first;
         int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
+        if(direction.equals("none")) {
+            sb.append(gameBoard[4][4]);
+        }
         if(direction.equals("bottom")) {
             for(int i = lastPosRow; i >= 0; --i) {
                 if(gameBoard[i][lastPosCol] != 0) {

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -131,7 +130,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void initializeControlButtons() {
         ImageButton enterBtn = findViewById(R.id.enter_button_image);
+        enterBtn.setVisibility(View.INVISIBLE);
         ImageButton returnBtn = findViewById(R.id.return_button_image);
+        returnBtn.setVisibility(View.INVISIBLE);
 
         returnBtn.setOnClickListener(v -> {
             if (placedTilesCount != 0) {
@@ -148,7 +149,8 @@ public class GameActivity extends AppCompatActivity {
                     isFirstWord = true;
                 }
                 placedTilesCount = 0;
-                enterBtn.setBackgroundColor(Color.GRAY);
+                enterBtn.setVisibility(View.INVISIBLE);
+                returnBtn.setVisibility(View.INVISIBLE);
                 enter = false;
             }
         });
@@ -165,7 +167,8 @@ public class GameActivity extends AppCompatActivity {
                         handTile.setVisibility(View.VISIBLE);
                     }
                 }
-                enterBtn.setBackgroundColor(Color.GRAY);
+                enterBtn.setVisibility(View.INVISIBLE);
+                returnBtn.setVisibility(View.INVISIBLE);
                 enter = false;
             }
         });
@@ -175,6 +178,8 @@ public class GameActivity extends AppCompatActivity {
         if (selectedChar != '0' && boardCell.getText().toString().isEmpty()) {
             if(placedTilesCount == 0 && isFirstWord) {
                 Game.addTile(boardCell, selectedChar, row, col, gameBoard);
+                findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
+
                 if (prevSelectedHandTileId != -1) {
                     findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
                 }
@@ -184,6 +189,7 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 if (Game.hasNeighbours(gameBoard, row, col)) {
                     Game.addTile(boardCell, selectedChar, row, col, gameBoard);
+                    findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
                     if (prevSelectedHandTileId != -1) {
                         findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
                     }
@@ -237,20 +243,17 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void turn () {
-        boolean flag = false;
         if(!isFirstWord && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
-            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
+            findViewById(R.id.enter_button_image).setVisibility(View.VISIBLE);
             enter = true;
-            flag = true;
         }
-        if(isFirstWord && gameBoard[4][4] != 0 && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
-            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GREEN);
+        else if(isFirstWord && gameBoard[4][4] != 0 && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
+            findViewById(R.id.enter_button_image).setVisibility(View.VISIBLE);
             isFirstWord = false;
             enter = true;
-            flag = true;
         }
-        if(!flag) {
-            findViewById(R.id.enter_button_image).setBackgroundColor(Color.GRAY);
+        else {
+            findViewById(R.id.enter_button_image).setVisibility(View.INVISIBLE);
             enter = false;
         }
 
