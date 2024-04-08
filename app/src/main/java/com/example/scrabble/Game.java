@@ -1,11 +1,18 @@
 package com.example.scrabble;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.Button;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,18 +21,21 @@ public class Game {
     private static final ArrayList<Character> charList;
     private static final Random random;
 
-    private static final List<Integer> diceList;
+    private static final List<Integer> tileList;
 
-    private static final List<Drawable> diceBackgroundList;
+    private static final List<Drawable> cellBackgroundList;
 
-    private static final List<Pair<Integer, Integer>> dicePosList;
+    private static final List<Pair<Integer, Integer>> cellPosList;
+
+    private static String direction;
+
 
     static  {
         charList = new ArrayList<>();
         random = new Random();
-        diceList = new ArrayList<>();
-        diceBackgroundList = new ArrayList<>();
-        dicePosList = new ArrayList<>();
+        tileList = new ArrayList<>();
+        cellBackgroundList = new ArrayList<>();
+        cellPosList = new ArrayList<>();
         initializeList(); // Инициализация списка символами
     }
 
@@ -77,40 +87,130 @@ public class Game {
     }
 
     public static boolean hasNeighbours(char[][] array, int row, int col) {
-        if (row > 0 && array[row - 1][col] != 0) return true; // Check top cell
-        if (row < array.length - 1 && array[row + 1][col] != 0) return true; // Check bottom cell
-        if (col > 0 && array[row][col - 1] != 0) return true; // Check left cell
-        if (col < array[row].length - 1 && array[row][col + 1] != 0) return true; // Check right cell
+        if (row > 0 && array[row - 1][col] != 0) {
+            direction = "bottom";
+            return true; // Check top cell
+        }
+        if (row < array.length - 1 && array[row + 1][col] != 0) {
+            direction = "top";
+            return true; // Check bottom cell
+        }
+        if (col > 0 && array[row][col - 1] != 0) {
+            direction = "right";
+            return true; // Check left cell
+        }
+        if (col < array[row].length - 1 && array[row][col + 1] != 0) {
+            direction = "left";
+            return true; // Check right cell
+        }
         return false;
     }
 
-    public static void addDice(Button button, char value, int row, int col) {
-        diceList.add(button.getId());
-        diceBackgroundList.add(button.getBackground());
-        dicePosList.add(new Pair<>(row, col));
+    public static void addTile(Button button, char value, int row, int col, char[][] gameBoard) {
+        tileList.add(button.getId());
+        cellBackgroundList.add(button.getBackground());
+        cellPosList.add(new Pair<>(row, col));
         removeChar(value);
         button.setText(String.valueOf(value));
         button.setBackgroundResource(R.drawable.tile_image);
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         button.setGravity(Gravity.CENTER);
+        gameBoard[row][col] = value;
     }
 
-    public static void nextTurn() {
-        diceList.clear();
-        diceBackgroundList.clear();
-        dicePosList.clear();
+    public static void endTurn() {
+        tileList.clear();
+        cellBackgroundList.clear();
+        cellPosList.clear();
     }
 
-    public static int returnDiceId() {
-        return diceList.remove(0);
+    public static int returnTileId() {
+        return tileList.remove(0);
     }
 
-    public static Drawable returnDiceBackground() {
-        return diceBackgroundList.remove(0);
+    public static Drawable returnCellBackground() {
+        return cellBackgroundList.remove(0);
     }
 
-    public static Pair<Integer, Integer> returnDicePosition() {
-        return dicePosList.remove(0);
+    public static Pair<Integer, Integer> returnCellPosition() {
+        return cellPosList.remove(0);
+    }
+
+
+    public static void undoLastMove(Button returnTile, char[][] gameBoard) {
+        Drawable background = Game.returnCellBackground();
+        Pair<Integer, Integer> pos = Game.returnCellPosition();
+        Game.addChar(returnTile.getText().charAt(0));
+        returnTile.setText("");
+        returnTile.setBackground(background);
+        gameBoard[pos.first][pos.second] = 0;
+    }
+
+    public static boolean checkWordInFile(Context context, String wordToFind) {
+        Log.i("MyAppTag", wordToFind);
+        AssetManager assetManager = context.getAssets();
+        try (InputStream inputStream = assetManager.open("dictionary.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals(wordToFind)) {
+                    Log.i("MyAppTag", "finded");
+                    return true; // Слово найдено
+                }
+            }
+        } catch (IOException e) {
+            Log.i("MyAppTag", "error");
+            e.printStackTrace();
+        }
+        Log.i("MyAppTag", "not finded");
+        return false; // Слово не найдено
+    }
+
+    public static String getWord(char[][] gameBoard) {
+        StringBuilder sb = new StringBuilder();
+        int lastPosRow = cellPosList.get(cellPosList.size() - 1).first;
+        int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
+        if(direction.equals("bottom")) {
+            for(int i = lastPosRow; i >= 0; --i) {
+                if(gameBoard[i][lastPosCol] != 0) {
+                    sb.append(gameBoard[i][lastPosCol]);
+                } else {
+                    break;
+                }
+            }
+        }
+        if(direction.equals("top")) {
+            for(int i = lastPosRow; i < 9; ++i) {
+                if(gameBoard[i][lastPosCol] != 0) {
+                    sb.append(gameBoard[i][lastPosCol]);
+                } else {
+                    break;
+                }
+            }
+        }
+        if(direction.equals("right")) {
+            for(int i = lastPosCol; i >= 0; --i) {
+                if(gameBoard[lastPosRow][i] != 0) {
+                    sb.append(gameBoard[lastPosRow][i]);
+                } else {
+                    break;
+                }
+            }
+        }
+        if(direction.equals("left")) {
+            for(int i = lastPosCol; i < 9; ++i) {
+                if(gameBoard[lastPosRow][i] != 0) {
+                    sb.append(gameBoard[lastPosRow][i]);
+                } else {
+                    break;
+                }
+            }
+        }
+        if(sb.toString().length() < tileList.size()) {
+            return "A word in two directions is unacceptable";
+        }
+        return sb.reverse().toString();
+
     }
 
 }
