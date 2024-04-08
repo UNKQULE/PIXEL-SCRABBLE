@@ -2,6 +2,7 @@ package com.example.scrabble;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Pair;
@@ -88,21 +89,38 @@ public class Game {
 
     public static boolean hasNeighbours(char[][] array, int row, int col) {
         if (row > 0 && array[row - 1][col] != 0) {
-            direction = "bottom";
+            if(direction.equals("none")) {
+                direction = "top";
+            } else {
+                direction = "bottom";
+            }
             return true; // Check top cell
         }
         if (row < array.length - 1 && array[row + 1][col] != 0) {
-            direction = "top";
+            if(direction.equals("none")) {
+                direction = "bottom";
+            } else {
+                direction = "top";
+            }
             return true; // Check bottom cell
         }
         if (col > 0 && array[row][col - 1] != 0) {
-            direction = "right";
+            if(direction.equals("none")) {
+                direction = "left";
+            } else {
+                direction = "right";
+            }
             return true; // Check left cell
         }
         if (col < array[row].length - 1 && array[row][col + 1] != 0) {
-            direction = "left";
+            if(direction.equals("none")) {
+                direction = "right";
+            } else {
+                direction = "left";
+            }
             return true; // Check right cell
         }
+        direction = "none";
         return false;
     }
 
@@ -111,6 +129,7 @@ public class Game {
         cellBackgroundList.add(button.getBackground());
         cellPosList.add(new Pair<>(row, col));
         removeChar(value);
+        button.setTextColor(Color.BLACK);
         button.setText(String.valueOf(value));
         button.setBackgroundResource(R.drawable.tile_image);
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -122,6 +141,7 @@ public class Game {
         tileList.clear();
         cellBackgroundList.clear();
         cellPosList.clear();
+        direction = "none";
     }
 
     public static int returnTileId() {
@@ -147,7 +167,7 @@ public class Game {
     }
 
     public static boolean checkWordInFile(Context context, String wordToFind) {
-        Log.i("MyAppTag", wordToFind);
+        Log.i("MyAppTag", "get" + wordToFind);
         AssetManager assetManager = context.getAssets();
         try (InputStream inputStream = assetManager.open("dictionary.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -159,7 +179,6 @@ public class Game {
                 }
             }
         } catch (IOException e) {
-            Log.i("MyAppTag", "error");
             e.printStackTrace();
         }
         Log.i("MyAppTag", "not finded");
@@ -170,10 +189,17 @@ public class Game {
         StringBuilder sb = new StringBuilder();
         int lastPosRow = cellPosList.get(cellPosList.size() - 1).first;
         int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
+        boolean reverse = false;
         if(direction.equals("none")) {
-            sb.append(gameBoard[4][4]);
+            sb.append(gameBoard[lastPosRow][lastPosCol]);
         }
         if(direction.equals("bottom")) {
+            reverse = true;
+            if(lastPosRow != 8) {
+                if(gameBoard[lastPosRow + 1][lastPosCol] != 0) {
+                    sb.append(gameBoard[lastPosRow + 1][lastPosCol]);
+                }
+            }
             for(int i = lastPosRow; i >= 0; --i) {
                 if(gameBoard[i][lastPosCol] != 0) {
                     sb.append(gameBoard[i][lastPosCol]);
@@ -183,6 +209,12 @@ public class Game {
             }
         }
         if(direction.equals("top")) {
+            reverse = false;
+            if(lastPosRow != 0) {
+                if(gameBoard[lastPosRow - 1][lastPosCol] != 0) {
+                    sb.append(gameBoard[lastPosRow - 1][lastPosCol]);
+                }
+            }
             for(int i = lastPosRow; i < 9; ++i) {
                 if(gameBoard[i][lastPosCol] != 0) {
                     sb.append(gameBoard[i][lastPosCol]);
@@ -192,6 +224,12 @@ public class Game {
             }
         }
         if(direction.equals("right")) {
+            reverse = true;
+            if(lastPosCol != 8) {
+                if(gameBoard[lastPosRow][lastPosCol + 1] != 0) {
+                    sb.append(gameBoard[lastPosRow][lastPosCol + 1]);
+                }
+            }
             for(int i = lastPosCol; i >= 0; --i) {
                 if(gameBoard[lastPosRow][i] != 0) {
                     sb.append(gameBoard[lastPosRow][i]);
@@ -201,6 +239,12 @@ public class Game {
             }
         }
         if(direction.equals("left")) {
+            reverse = false;
+            if(lastPosCol != 0) {
+                if(gameBoard[lastPosRow][lastPosCol - 1] != 0) {
+                    sb.append(gameBoard[lastPosRow][lastPosCol - 1]);
+                }
+            }
             for(int i = lastPosCol; i < 9; ++i) {
                 if(gameBoard[lastPosRow][i] != 0) {
                     sb.append(gameBoard[lastPosRow][i]);
@@ -209,10 +253,20 @@ public class Game {
                 }
             }
         }
+
+        if(!GameActivity.isFirstWord && sb.toString().length() < tileList.size() + 1) {
+            return "The word must be a neighbor of the previous one";
+        }
         if(sb.toString().length() < tileList.size()) {
             return "A word in two directions is unacceptable";
         }
-        return sb.reverse().toString();
+
+        if(reverse) {
+            return sb.reverse().toString();
+        } else {
+            return sb.toString();
+        }
+
 
     }
 

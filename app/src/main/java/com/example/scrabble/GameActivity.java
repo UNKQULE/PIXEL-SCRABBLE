@@ -53,11 +53,9 @@ public class GameActivity extends AppCompatActivity {
     private int prevSelectedHandTileId = -1;
     private char selectedChar = '0';
     private int placedTilesCount = 0;
-    private boolean isFirstWord = true;
+    public static boolean isFirstWord = true;
 
-    private boolean enter = false;
-
-    private int wordCount = 0;
+    private boolean isFirstLetter = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,19 +143,15 @@ public class GameActivity extends AppCompatActivity {
                         handButton.setVisibility(View.VISIBLE);
                     }
                 }
-                if(wordCount == 0) {
-                    isFirstWord = true;
-                }
                 placedTilesCount = 0;
                 enterBtn.setVisibility(View.INVISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
-                enter = false;
+                isFirstLetter = true;
             }
         });
 
         enterBtn.setOnClickListener(v -> {
-            if (enter) {
-                wordCount++;
+            if (enterBtn.getVisibility() == View.VISIBLE) {
                 Game.endTurn();
                 placedTilesCount = 0;
                 for (Button handTile : handTiles) {
@@ -167,17 +161,20 @@ public class GameActivity extends AppCompatActivity {
                         handTile.setVisibility(View.VISIBLE);
                     }
                 }
+                isFirstLetter = true;
+                isFirstWord = false;
                 enterBtn.setVisibility(View.INVISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
-                enter = false;
             }
         });
     }
 
     private void boardCellClick(Button boardCell, int row, int col) {
         if (selectedChar != '0' && boardCell.getText().toString().isEmpty()) {
-            if(placedTilesCount == 0 && isFirstWord) {
+            if(placedTilesCount == 0 && isFirstLetter) {
+                isFirstLetter = false;
                 Game.addTile(boardCell, selectedChar, row, col, gameBoard);
+                Game.hasNeighbours(gameBoard, row, col);
                 findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
 
                 if (prevSelectedHandTileId != -1) {
@@ -245,16 +242,12 @@ public class GameActivity extends AppCompatActivity {
     private void turn () {
         if(!isFirstWord && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
             findViewById(R.id.enter_button_image).setVisibility(View.VISIBLE);
-            enter = true;
         }
         else if(isFirstWord && gameBoard[4][4] != 0 && Game.checkWordInFile(this, Game.getWord(gameBoard))) {
             findViewById(R.id.enter_button_image).setVisibility(View.VISIBLE);
-            isFirstWord = false;
-            enter = true;
         }
         else {
             findViewById(R.id.enter_button_image).setVisibility(View.INVISIBLE);
-            enter = false;
         }
 
     }
