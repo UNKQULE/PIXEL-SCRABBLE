@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private static final ArrayList<Character> charList;
+    public static final ArrayList<Character> charList;
     private static final Random random;
 
     private static final List<Integer> tileList;
@@ -29,6 +29,8 @@ public class Game {
     private static final List<Pair<Integer, Integer>> cellPosList;
 
     private static String direction = "none";
+
+    private static boolean accessToFind = true;
 
 
     static  {
@@ -87,41 +89,30 @@ public class Game {
         return charList.get(random.nextInt(charList.size()));
     }
 
-    public static boolean hasNeighbours(char[][] array, int row, int col) {
-        if (row > 0 && array[row - 1][col] != 0) {
-            if(direction.equals("none")) {
-                direction = "top";
-            } else {
-                direction = "bottom";
-            }
-            return true; // Check top cell
-        }
-        if (row < array.length - 1 && array[row + 1][col] != 0) {
-            if(direction.equals("none")) {
-                direction = "bottom";
-            } else {
-                direction = "top";
-            }
-            return true; // Check bottom cell
-        }
-        if (col > 0 && array[row][col - 1] != 0) {
-            if(direction.equals("none")) {
-                direction = "left";
-            } else {
-                direction = "right";
-            }
-            return true; // Check left cell
-        }
-        if (col < array[row].length - 1 && array[row][col + 1] != 0) {
-            if(direction.equals("none")) {
-                direction = "right";
-            } else {
-                direction = "left";
-            }
-            return true; // Check right cell
-        }
+    public static void hasNeighbours(char[][] array, int row, int col) {
+        boolean hasVerticalNeighbour = false;
+        boolean hasHorizontalNeighbour = false;
         direction = "none";
-        return false;
+        if (row > 0 && array[row - 1][col] != 0) { // Check top cell
+            direction = "bottom";
+            hasVerticalNeighbour = true;
+        }
+        if (row < 8 && array[row + 1][col] != 0) { // Check bottom cell
+            direction = "top";
+            hasVerticalNeighbour = true;
+        }
+        if (col > 0 && array[row][col - 1] != 0) { // Check left cell
+            direction = "right";
+            hasHorizontalNeighbour = true;
+        }
+        if (col < 8 && array[row][col + 1] != 0) { // Check right cell
+            direction = "left";
+            hasHorizontalNeighbour = true;
+        }
+
+        if(hasHorizontalNeighbour && hasVerticalNeighbour) {
+            accessToFind = false;
+        }
     }
 
     public static void addTile(Button button, char value, int row, int col, char[][] gameBoard) {
@@ -142,6 +133,7 @@ public class Game {
         cellBackgroundList.clear();
         cellPosList.clear();
         direction = "none";
+        accessToFind = true;
     }
 
     public static int returnTileId() {
@@ -164,6 +156,8 @@ public class Game {
         returnTile.setText("");
         returnTile.setBackground(background);
         gameBoard[pos.first][pos.second] = 0;
+        direction = "none";
+        accessToFind = true;
     }
 
     public static boolean checkWordInFile(Context context, String wordToFind) {
@@ -186,10 +180,16 @@ public class Game {
     }
 
     public static String getWord(char[][] gameBoard) {
+        if(!accessToFind) {
+            return "Too many neighbors";
+        }
+
         StringBuilder sb = new StringBuilder();
         int lastPosRow = cellPosList.get(cellPosList.size() - 1).first;
         int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
         boolean reverse = false;
+
+
         if(direction.equals("none")) {
             sb.append(gameBoard[lastPosRow][lastPosCol]);
         }

@@ -55,8 +55,6 @@ public class GameActivity extends AppCompatActivity {
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
 
-    private boolean isFirstLetter = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +129,7 @@ public class GameActivity extends AppCompatActivity {
         enterBtn.setVisibility(View.INVISIBLE);
         ImageButton returnBtn = findViewById(R.id.return_button_image);
         returnBtn.setVisibility(View.INVISIBLE);
+        ImageButton swapBtn = findViewById(R.id.swap_button_image);
 
         returnBtn.setOnClickListener(v -> {
             if (placedTilesCount != 0) {
@@ -138,15 +137,15 @@ public class GameActivity extends AppCompatActivity {
                     Button returnTile = findViewById(Game.returnTileId());
                     Game.undoLastMove(returnTile, gameBoard);
                 }
-                for (Button handButton : handTiles) {
-                    if (!handButton.isShown()) {
-                        handButton.setVisibility(View.VISIBLE);
+                for (Button handTile : handTiles) {
+                    if (!handTile.isShown()) {
+                        handTile.setVisibility(View.VISIBLE);
                     }
                 }
                 placedTilesCount = 0;
                 enterBtn.setVisibility(View.INVISIBLE);
+                swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
-                isFirstLetter = true;
             }
         });
 
@@ -154,48 +153,49 @@ public class GameActivity extends AppCompatActivity {
             if (enterBtn.getVisibility() == View.VISIBLE) {
                 Game.endTurn();
                 placedTilesCount = 0;
-                for (Button handTile : handTiles) {
-                    if (!handTile.isShown()) {
-                        char letter = Game.getRandomChar();
-                        handTile.setText(String.valueOf(letter));
-                        handTile.setVisibility(View.VISIBLE);
+                if(Game.charList.size() >= 7) {
+                    for (Button handTile : handTiles) {
+                        if (!handTile.isShown()) {
+                            char letter = Game.getRandomChar();
+                            handTile.setText(String.valueOf(letter));
+                            handTile.setVisibility(View.VISIBLE);
+                        }
                     }
+                } else {
+                    finish();
                 }
-                isFirstLetter = true;
+
                 isFirstWord = false;
                 enterBtn.setVisibility(View.INVISIBLE);
+                swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        swapBtn.setOnClickListener(v -> {
+            if(Game.charList.size() >= 7) {
+                for (Button handTile : handTiles) {
+                    char letter = Game.getRandomChar();
+                    Game.addChar(handTile.getText().charAt(0));
+                    handTile.setText(String.valueOf(letter));
+                }
             }
         });
     }
 
     private void boardCellClick(Button boardCell, int row, int col) {
         if (selectedChar != '0' && boardCell.getText().toString().isEmpty()) {
-            if(placedTilesCount == 0 && isFirstLetter) {
-                isFirstLetter = false;
-                Game.addTile(boardCell, selectedChar, row, col, gameBoard);
-                Game.hasNeighbours(gameBoard, row, col);
-                findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
+            Game.addTile(boardCell, selectedChar, row, col, gameBoard);
+            Game.hasNeighbours(gameBoard, row, col);
+            findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
+            findViewById(R.id.swap_button_image).setVisibility(View.INVISIBLE);
 
-                if (prevSelectedHandTileId != -1) {
-                    findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
-                }
-                selectedChar = '0';
-                placedTilesCount++;
-                turn();
-            } else {
-                if (Game.hasNeighbours(gameBoard, row, col)) {
-                    Game.addTile(boardCell, selectedChar, row, col, gameBoard);
-                    findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
-                    if (prevSelectedHandTileId != -1) {
-                        findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
-                    }
-                    selectedChar = '0';
-                    placedTilesCount++;
-                    turn();
-                }
+            if (prevSelectedHandTileId != -1) {
+                findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
             }
-
+            selectedChar = '0';
+            placedTilesCount++;
+            turn();
         }
     }
 
