@@ -3,7 +3,6 @@ package com.example.scrabble;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
@@ -13,29 +12,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton playButton = (ImageButton) findViewById(R.id.button_play);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startGame();
-            }
-        });
+        ImageButton playButton = findViewById(R.id.button_play);
+        playButton.setOnClickListener(v -> startGame());
 
-        ImageButton statsButton = (ImageButton) findViewById(R.id.button_stats);
-        statsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showStats();
-            }
-        });
+        ImageButton statsButton = findViewById(R.id.button_stats);
+        statsButton.setOnClickListener(v -> showStats());
 
-        ImageButton exitButton = (ImageButton) findViewById(R.id.button_exit);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ImageButton exitButton = findViewById(R.id.button_exit);
+        exitButton.setOnClickListener(v -> finish());
     }
 
     private void startGame() {
