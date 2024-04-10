@@ -2,12 +2,8 @@ package com.example.scrabble;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Pair;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.widget.Button;
 
 import java.io.BufferedReader;
@@ -19,12 +15,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    public static final ArrayList<Character> charList;
+    public static final ArrayList<Pair<Character, String>> charList;
     private static final Random random;
 
-    private static final List<Integer> tileList;
+    private static final List<Pair<Integer, Integer>> cellAndTileList;
 
-    private static final List<Drawable> cellBackgroundList;
 
     private static final List<Pair<Integer, Integer>> cellPosList;
 
@@ -36,56 +31,55 @@ public class Game {
     static  {
         charList = new ArrayList<>();
         random = new Random();
-        tileList = new ArrayList<>();
-        cellBackgroundList = new ArrayList<>();
+        cellAndTileList = new ArrayList<>();
         cellPosList = new ArrayList<>();
         initializeList();
     }
 
     private static void initializeList() {
-        addChars('E', 12);
-        addChars('A', 9);
-        addChars('I', 9);
-        addChars('O', 8);
-        addChars('N', 6);
-        addChars('R', 6);
-        addChars('T', 6);
-        addChars('L', 4);
-        addChars('S', 4);
-        addChars('U', 4);
-        addChars('D', 4);
-        addChars('G', 3);
-        addChars('B', 2);
-        addChars('C', 2);
-        addChars('M', 2);
-        addChars('P', 2);
-        addChars('F', 2);
-        addChars('H', 2);
-        addChars('V', 2);
-        addChars('W', 2);
-        addChars('Y', 2);
-        addChars('K', 1);
-        addChars('J', 1);
-        addChars('X', 1);
-        addChars('Q', 1);
-        addChars('Z', 1);
+        addChars('E', "1", 12);
+        addChars('A', "1", 9);
+        addChars('I', "1",9);
+        addChars('O', "1", 8);
+        addChars('N', "1", 6);
+        addChars('R', "1", 6);
+        addChars('T', "1", 6);
+        addChars('L', "1", 4);
+        addChars('S', "1", 4);
+        addChars('U', "1", 4);
+        addChars('D', "2", 4);
+        addChars('G', "2", 3);
+        addChars('B', "3",2);
+        addChars('C', "3",2);
+        addChars('M', "3",2);
+        addChars('P', "3",2);
+        addChars('F', "4",2);
+        addChars('H', "4",2);
+        addChars('V', "4",2);
+        addChars('W', "4",2);
+        addChars('Y', "4",2);
+        addChars('K', "5",1);
+        addChars('J', "8",1);
+        addChars('X', "8",1);
+        addChars('Q', "10",1);
+        addChars('Z', "10",1);
     }
 
-    private static void addChars(char character, int count) {
+    private static void addChars(char character, String number, int count) {
         for (int i = 0; i < count; i++) {
-            charList.add(character);
+            charList.add(new Pair<>(character, number));
         }
     }
 
-    public static void addChar(char c) {
-        charList.add(c);
+    public static void addChar(char c, String num) {
+        charList.add(new Pair<>(c, num));
     }
 
-    public static void removeChar(char c) {
-        charList.remove((Character) c);
+    public static void removeChar(char c, String num) {
+        charList.remove(new Pair<>(c, num));
     }
 
-    public static char getRandomChar() {
+    public static Pair<Character, String> getRandomChar() {
         return charList.get(random.nextInt(charList.size()));
     }
 
@@ -115,33 +109,24 @@ public class Game {
         }
     }
 
-    public static void addTile(Button button, char value, int row, int col, char[][] gameBoard) {
-        tileList.add(button.getId());
-        cellBackgroundList.add(button.getBackground());
+    public static void addTile(Button cell, Tile tile, char value, String scoreValue, int row, int col, char[][] gameBoard) {
+        cellAndTileList.add(new Pair<>(cell.getId(), tile.getId()));
         cellPosList.add(new Pair<>(row, col));
-        removeChar(value);
-        button.setTextColor(Color.BLACK);
-        button.setText(String.valueOf(value));
-        button.setBackgroundResource(R.drawable.tile_image);
-        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        button.setGravity(Gravity.CENTER);
+        removeChar(value, scoreValue);
+        tile.setLetter(String.valueOf(value));
+        tile.setScore(scoreValue);
         gameBoard[row][col] = value;
     }
 
     public static void endTurn() {
-        tileList.clear();
-        cellBackgroundList.clear();
+        cellAndTileList.clear();
         cellPosList.clear();
         direction = "none";
         accessToFind = true;
     }
 
-    public static int returnTileId() {
-        return tileList.remove(0);
-    }
-
-    public static Drawable returnCellBackground() {
-        return cellBackgroundList.remove(0);
+    public static Pair<Integer, Integer> returnCellAndTileId() {
+        return cellAndTileList.remove(0);
     }
 
     public static Pair<Integer, Integer> returnCellPosition() {
@@ -149,12 +134,11 @@ public class Game {
     }
 
 
-    public static void undoLastMove(Button returnTile, char[][] gameBoard) {
-        Drawable background = Game.returnCellBackground();
+    public static void undoLastMove(Tile returnTile, char[][] gameBoard) {
         Pair<Integer, Integer> pos = Game.returnCellPosition();
-        Game.addChar(returnTile.getText().charAt(0));
-        returnTile.setText("");
-        returnTile.setBackground(background);
+        Game.addChar(returnTile.getLetter(), returnTile.getScore());
+        returnTile.setLetter("");
+        returnTile.setScore("");
         gameBoard[pos.first][pos.second] = 0;
         direction = "none";
         accessToFind = true;
@@ -254,10 +238,10 @@ public class Game {
             }
         }
 
-        if(!GameActivity.isFirstWord && sb.toString().length() < tileList.size() + 1) {
+        if(!GameActivity.isFirstWord && sb.toString().length() < cellAndTileList.size() + 1) {
             return "The word must be a neighbor of the previous one";
         }
-        if(sb.toString().length() < tileList.size()) {
+        if(sb.toString().length() < cellAndTileList.size()) {
             return "A word in two directions is unacceptable";
         }
 
