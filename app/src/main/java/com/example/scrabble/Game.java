@@ -18,12 +18,13 @@ public class Game {
     public static final ArrayList<Pair<Character, String>> charList;
     private static final Random random;
 
-    private static final List<Pair<Integer, Integer>> cellAndTileList;
+    public static final List<Pair<Integer, Integer>> cellAndTileList;
 
 
     private static final List<Pair<Integer, Integer>> cellPosList;
 
     private static String direction = "none";
+    private static String prevDirection = "none";
 
     private static boolean accessToFind = true;
 
@@ -86,6 +87,7 @@ public class Game {
     public static void hasNeighbours(char[][] array, int row, int col) {
         boolean hasVerticalNeighbour = false;
         boolean hasHorizontalNeighbour = false;
+        prevDirection = direction;
         direction = "none";
         if (row > 0 && array[row - 1][col] != 0) { // Check top cell
             direction = "bottom";
@@ -135,6 +137,7 @@ public class Game {
 
 
     public static void undoLastMove(Tile returnTile, char[][] gameBoard) {
+        returnTile.setDefault();
         Pair<Integer, Integer> pos = Game.returnCellPosition();
         Game.addChar(returnTile.getLetter(), returnTile.getScore());
         returnTile.setLetter("");
@@ -179,11 +182,18 @@ public class Game {
         }
         if(direction.equals("bottom")) {
             reverse = true;
-            if(lastPosRow != 8) {
-                if(gameBoard[lastPosRow + 1][lastPosCol] != 0) {
-                    sb.append(gameBoard[lastPosRow + 1][lastPosCol]);
+            if(prevDirection.equals("top")) {
+                for(int i = cellPosList.size() - 1; i > 0; --i) {
+                    if(lastPosRow == 8) {
+                        break;
+                    }
+                    if(gameBoard[lastPosRow + i][lastPosCol] != 0) {
+                        sb.append(gameBoard[lastPosRow + i][lastPosCol]);
+                    }
+
                 }
             }
+
             for(int i = lastPosRow; i >= 0; --i) {
                 if(gameBoard[i][lastPosCol] != 0) {
                     sb.append(gameBoard[i][lastPosCol]);
@@ -194,11 +204,18 @@ public class Game {
         }
         if(direction.equals("top")) {
             reverse = false;
-            if(lastPosRow != 0) {
-                if(gameBoard[lastPosRow - 1][lastPosCol] != 0) {
-                    sb.append(gameBoard[lastPosRow - 1][lastPosCol]);
+            if(prevDirection.equals("bottom")) {
+                for(int i = cellPosList.size() - 1; i > 0; --i) {
+                    if(lastPosRow == 0) {
+                        break;
+                    }
+                    if(gameBoard[lastPosRow - i][lastPosCol] != 0) {
+                        sb.append(gameBoard[lastPosRow - i][lastPosCol]);
+                    }
+
                 }
             }
+
             for(int i = lastPosRow; i < 9; ++i) {
                 if(gameBoard[i][lastPosCol] != 0) {
                     sb.append(gameBoard[i][lastPosCol]);
@@ -209,11 +226,18 @@ public class Game {
         }
         if(direction.equals("right")) {
             reverse = true;
-            if(lastPosCol != 8) {
-                if(gameBoard[lastPosRow][lastPosCol + 1] != 0) {
-                    sb.append(gameBoard[lastPosRow][lastPosCol + 1]);
+            if(prevDirection.equals("left")) {
+                for(int i = cellPosList.size() - 1; i > 0; --i) {
+                    if(lastPosCol == 0) {
+                        break;
+                    }
+                    if(gameBoard[lastPosRow][lastPosCol - i] != 0) {
+                        sb.append(gameBoard[lastPosRow][lastPosCol - i]);
+                    }
+
                 }
             }
+
             for(int i = lastPosCol; i >= 0; --i) {
                 if(gameBoard[lastPosRow][i] != 0) {
                     sb.append(gameBoard[lastPosRow][i]);
@@ -224,11 +248,18 @@ public class Game {
         }
         if(direction.equals("left")) {
             reverse = false;
-            if(lastPosCol != 0) {
-                if(gameBoard[lastPosRow][lastPosCol - 1] != 0) {
-                    sb.append(gameBoard[lastPosRow][lastPosCol - 1]);
+            if(prevDirection.equals("right")) {
+                for(int i = cellPosList.size() - 1; i > 0; --i) {
+                    if(lastPosCol == 8) {
+                        break;
+                    }
+                    if(gameBoard[lastPosRow][lastPosCol + i] != 0) {
+                        sb.append(gameBoard[lastPosRow][lastPosCol + i]);
+                    }
+
                 }
             }
+
             for(int i = lastPosCol; i < 9; ++i) {
                 if(gameBoard[lastPosRow][i] != 0) {
                     sb.append(gameBoard[lastPosRow][i]);
@@ -237,6 +268,8 @@ public class Game {
                 }
             }
         }
+
+        Log.i("MyAppTag", sb.toString());
 
         if(!GameActivity.isFirstWord && sb.toString().length() < cellAndTileList.size() + 1) {
             return "The word must be a neighbor of the previous one";

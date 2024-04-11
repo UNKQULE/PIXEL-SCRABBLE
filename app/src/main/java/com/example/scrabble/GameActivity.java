@@ -4,6 +4,7 @@ package com.example.scrabble;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -54,6 +55,11 @@ public class GameActivity extends AppCompatActivity {
     private String selectedScore = "";
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
+
+    private boolean tripleWordMod = false;
+
+    public int finalScore = 0;
+    private int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +158,8 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
                 placedTilesCount = 0;
+                score = 0;
+                tripleWordMod = false;
                 enterBtn.setVisibility(View.INVISIBLE);
                 swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
@@ -162,6 +170,8 @@ public class GameActivity extends AppCompatActivity {
             if (enterBtn.getVisibility() == View.VISIBLE) {
                 Game.endTurn();
                 placedTilesCount = 0;
+                finalScore = score;
+                score = 0;
                 if(Game.charList.size() >= 7) {
                     for (Tile handTile : handTiles) {
                         if (!handTile.isShown()) {
@@ -176,6 +186,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 isFirstWord = false;
+                tripleWordMod = false;
                 enterBtn.setVisibility(View.INVISIBLE);
                 swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
@@ -196,6 +207,29 @@ public class GameActivity extends AppCompatActivity {
 
     private void boardCellClick(Button boardCell,Tile boardTile, int row, int col) {
         if (selectedChar != '0' && boardCell.getVisibility() == View.VISIBLE) {
+            if (boardCell.getText() == "2") {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 2);
+                boardTile.setL2();
+            }
+            if (boardCell.getText() == "3") {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                boardTile.setL3();
+            }
+            if (tripleWordMod) {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                boardTile.setW3();
+            }
+            if (boardCell.getText() == "33") {
+                score *= 3;
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                for(int i = 0; i < Game.cellAndTileList.size(); ++i) {
+                    Tile modTile = findViewById(Game.cellAndTileList.get(i).second);
+                    modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                    modTile.setW3();
+                }
+                boardTile.setW3();
+                tripleWordMod = true;
+            }
             boardCell.setVisibility(View.GONE);
             boardTile.setVisibility(View.VISIBLE);
             Game.addTile(boardCell, boardTile, selectedChar, selectedScore, row, col, gameBoard);
@@ -207,6 +241,7 @@ public class GameActivity extends AppCompatActivity {
                 findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
             }
             selectedChar = '0';
+            score += Integer.parseInt(selectedScore);
             placedTilesCount++;
             turn();
         }
@@ -238,14 +273,21 @@ public class GameActivity extends AppCompatActivity {
 
     private Button getBoardCell(int row, int col) {
         Pair<Integer, Integer> pos = new Pair<>(row, col);
+        Button boardCell;
         if(w3.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.W3Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.W3Place), null, 0);
+            boardCell.setText("33");
+            return boardCell;
         }
         if(l3.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.L3Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.L3Place), null, 0);
+            boardCell.setText("3");
+            return boardCell;
         }
         if(l2.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.L2Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.L2Place), null, 0);
+            boardCell.setText("2");
+            return boardCell;
         }
         if(pos.equals(new Pair<>(4, 4))) {
             return new Button(new android.view.ContextThemeWrapper(this, R.style.StartPlace), null, 0);

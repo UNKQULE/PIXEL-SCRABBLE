@@ -24,9 +24,9 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста посередине
         letter = new TextView(context);
-        letter.setTextColor(Color.BLACK);
-        int pixels = spToPx(context, 10);
+        int pixels = spToPx(context, 14);
         letter.setTextSize(pixels);
+        letter.setTextColor(Color.BLACK);
         letter.setText("");
         letter.setGravity(Gravity.CENTER); // Выравнивание по центру
         RelativeLayout.LayoutParams centerTextParams = new RelativeLayout.LayoutParams(
@@ -38,20 +38,28 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста в правом верхнем углу
         score = new TextView(context);
-        score.setTextColor(Color.BLACK);
+        pixels = spToPx(context, 6);
+        score.setTextSize(pixels);
+        letter.setTextColor(Color.BLACK);
         score.setText("");
         RelativeLayout.LayoutParams topRightParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+        topRightParams.rightMargin = pxToDp(context, 10);
         topRightParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         topRightParams.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+
         addView(score, topRightParams); // Добавляем TextView в layout
     }
 
     public static int spToPx(Context context, float spValue) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * scaledDensity + 0.5f);
+    }
+
+    public static int pxToDp(Context context, float px) {
+        return (int) (px / context.getResources().getDisplayMetrics().density);
     }
 
     // Методы для настройки или получения данных c TextView могут быть добавлены здесь
@@ -69,5 +77,25 @@ public class Tile extends RelativeLayout {
 
     public void setScore(String num) {
         score.setText(num);
+    }
+
+    public void setDefault() {
+        letter.setTextColor(Color.BLACK);
+        score.setTextColor(Color.BLACK);
+    }
+
+    public void setL2() {
+        letter.setTextColor(Color.YELLOW);
+        score.setTextColor(Color.YELLOW);
+    }
+
+    public void setL3() {
+        letter.setTextColor(Color.GREEN);
+        score.setTextColor(Color.GREEN);
+    }
+
+    public void setW3() {
+        letter.setTextColor(Color.RED);
+        score.setTextColor(Color.RED);
     }
 }
