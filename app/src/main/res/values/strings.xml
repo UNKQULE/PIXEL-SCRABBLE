@@ -5,4 +5,7 @@
     <string name="exit">EXIT</string>
     <string name="enter">ENTER</string>
     <string name="Return">RETURN</string>
+    <string name="easy">easy</string>
+    <string name="medium">medium</string>
+    <string name="hard">hard</string>
 </resources>

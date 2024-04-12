@@ -23,8 +23,8 @@ public class MainActivity extends Activity {
     }
 
     private void startGame() {
-        Intent intent = new Intent(MainActivity.this, GameActivity.class);
-        startActivity(intent);
+        Intent intent1 = new Intent(MainActivity.this, LevelActivity.class);
+        startActivity(intent1);
     }
 
     private void showStats() {

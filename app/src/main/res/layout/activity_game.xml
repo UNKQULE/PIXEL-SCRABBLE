@@ -80,7 +80,7 @@
             android:adjustViewBounds="true"
             android:background="?android:attr/selectableItemBackground"
             android:scaleType="centerInside"
-            android:src="@drawable/skip"
+            android:src="@drawable/swap_btn_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
