@@ -56,17 +56,19 @@ public class GameActivity extends AppCompatActivity {
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
 
-    private boolean tripleWordMod = false;
+    public static boolean tripleWordMod = false;
 
     public int finalScore = 0;
-    private int score = 0;
+    private static int score = 0;
+
+    private static View gameboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
         GridLayout gridLayout = findViewById(R.id.gridLayout);
+        gameboard = gridLayout;
         ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
 
         initializeBoard(gridLayout);
@@ -81,6 +83,7 @@ public class GameActivity extends AppCompatActivity {
                 boardCell.setId(View.generateViewId());
                 Tile boardTile = new Tile(this);
                 boardTile.setId(View.generateViewId());
+                boardTile.setTag(new Pair<>(row, col));
                 boardTile.setVisibility(View.GONE);
                 int finalRow = row;
                 int finalCol = col;
@@ -215,10 +218,6 @@ public class GameActivity extends AppCompatActivity {
                 selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
                 boardTile.setL3();
             }
-            if (tripleWordMod) {
-                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
-                boardTile.setW3();
-            }
             if (boardCell.getText() == "33") {
                 score *= 3;
                 selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
@@ -245,6 +244,14 @@ public class GameActivity extends AppCompatActivity {
             placedTilesCount++;
             turn();
         }
+    }
+
+    public static void getTileW3Modification(Pair<Integer, Integer> tileTag) {
+        Tile modTile = gameboard.findViewWithTag(tileTag);
+        int tileScore = Integer.parseInt(modTile.getScore());
+        score += tileScore * 2;
+        modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+        modTile.setW3();
     }
 
     private void handTileClick(Tile tile) {

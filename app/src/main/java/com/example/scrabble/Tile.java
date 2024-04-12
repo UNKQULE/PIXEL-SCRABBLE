@@ -40,7 +40,7 @@ public class Tile extends RelativeLayout {
         score = new TextView(context);
         pixels = spToPx(context, 6);
         score.setTextSize(pixels);
-        letter.setTextColor(Color.BLACK);
+        score.setTextColor(Color.BLACK);
         score.setText("");
         RelativeLayout.LayoutParams topRightParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,

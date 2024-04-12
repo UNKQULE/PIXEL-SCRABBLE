@@ -24,9 +24,9 @@ public class Game {
     private static final List<Pair<Integer, Integer>> cellPosList;
 
     private static String direction = "none";
-    private static String prevDirection = "none";
 
     private static boolean accessToFind = true;
+    private static boolean startDirectionIsNone = false;
 
 
     static  {
@@ -87,14 +87,18 @@ public class Game {
     public static void hasNeighbours(char[][] array, int row, int col) {
         boolean hasVerticalNeighbour = false;
         boolean hasHorizontalNeighbour = false;
-        prevDirection = direction;
         direction = "none";
         if (row > 0 && array[row - 1][col] != 0) { // Check top cell
             direction = "bottom";
             hasVerticalNeighbour = true;
         }
         if (row < 8 && array[row + 1][col] != 0) { // Check bottom cell
-            direction = "top";
+            if (!startDirectionIsNone) {
+                direction = "top";
+            } else {
+                direction = "bottom";
+            }
+
             hasVerticalNeighbour = true;
         }
         if (col > 0 && array[row][col - 1] != 0) { // Check left cell
@@ -102,7 +106,12 @@ public class Game {
             hasHorizontalNeighbour = true;
         }
         if (col < 8 && array[row][col + 1] != 0) { // Check right cell
-            direction = "left";
+            if(!startDirectionIsNone) {
+                direction = "left";
+            } else {
+                direction = "right";
+            }
+
             hasHorizontalNeighbour = true;
         }
 
@@ -125,6 +134,7 @@ public class Game {
         cellPosList.clear();
         direction = "none";
         accessToFind = true;
+        startDirectionIsNone = false;
     }
 
     public static Pair<Integer, Integer> returnCellAndTileId() {
@@ -145,10 +155,11 @@ public class Game {
         gameBoard[pos.first][pos.second] = 0;
         direction = "none";
         accessToFind = true;
+        startDirectionIsNone = false;
     }
 
     public static boolean checkWordInFile(Context context, String wordToFind) {
-        Log.i("MyAppTag", "get" + wordToFind);
+        Log.i("MyAppTag",  wordToFind);
         AssetManager assetManager = context.getAssets();
         try (InputStream inputStream = assetManager.open("dictionary.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -172,101 +183,124 @@ public class Game {
         }
 
         StringBuilder sb = new StringBuilder();
+        int firstPosRow = cellPosList.get(0).first;
+        int firstPosCol = cellPosList.get(0).second;
         int lastPosRow = cellPosList.get(cellPosList.size() - 1).first;
         int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
         boolean reverse = false;
 
+        Log.i("MyAppTag", direction);
+
 
         if(direction.equals("none")) {
             sb.append(gameBoard[lastPosRow][lastPosCol]);
+            startDirectionIsNone = true;
         }
         if(direction.equals("bottom")) {
-            reverse = true;
-            if(prevDirection.equals("top")) {
-                for(int i = cellPosList.size() - 1; i > 0; --i) {
-                    if(lastPosRow == 8) {
+            if(startDirectionIsNone) {
+                reverse = false;
+                for(int i = firstPosRow; i < 9; ++i) {
+                    if(gameBoard[i][firstPosCol] != 0) {
+                        sb.append(gameBoard[i][firstPosCol]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(i, firstPosCol));
+                        }
+                    } else {
                         break;
                     }
-                    if(gameBoard[lastPosRow + i][lastPosCol] != 0) {
-                        sb.append(gameBoard[lastPosRow + i][lastPosCol]);
+                }
+            } else {
+                reverse = true;
+                for(int i = lastPosRow; i >= 0; --i) {
+                    if(gameBoard[i][lastPosCol] != 0) {
+                        sb.append(gameBoard[i][lastPosCol]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(i, lastPosCol));
+                        }
+                    } else {
+                        break;
                     }
-
                 }
             }
 
-            for(int i = lastPosRow; i >= 0; --i) {
-                if(gameBoard[i][lastPosCol] != 0) {
-                    sb.append(gameBoard[i][lastPosCol]);
-                } else {
-                    break;
-                }
-            }
         }
         if(direction.equals("top")) {
-            reverse = false;
-            if(prevDirection.equals("bottom")) {
-                for(int i = cellPosList.size() - 1; i > 0; --i) {
-                    if(lastPosRow == 0) {
+            if(startDirectionIsNone) {
+                reverse = true;
+                for(int i = firstPosRow; i >= 0; --i) {
+                    if(gameBoard[i][firstPosCol] != 0) {
+                        sb.append(gameBoard[i][firstPosCol]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(i, firstPosCol));
+                        }
+                    } else {
                         break;
                     }
-                    if(gameBoard[lastPosRow - i][lastPosCol] != 0) {
-                        sb.append(gameBoard[lastPosRow - i][lastPosCol]);
+                }
+            } else {
+                reverse = false;
+                for(int i = lastPosRow; i < 9; ++i) {
+                    if(gameBoard[i][lastPosCol] != 0) {
+                        sb.append(gameBoard[i][lastPosCol]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(i, lastPosCol));
+                        }
+                    } else {
+                        break;
                     }
-
                 }
             }
 
-            for(int i = lastPosRow; i < 9; ++i) {
-                if(gameBoard[i][lastPosCol] != 0) {
-                    sb.append(gameBoard[i][lastPosCol]);
-                } else {
-                    break;
-                }
-            }
         }
         if(direction.equals("right")) {
-            reverse = true;
-            if(prevDirection.equals("left")) {
-                for(int i = cellPosList.size() - 1; i > 0; --i) {
-                    if(lastPosCol == 0) {
+            if(startDirectionIsNone) {
+                reverse = false;
+                for(int i = firstPosCol; i < 9; ++i) {
+                    if(gameBoard[firstPosRow][i] != 0) {
+                        sb.append(gameBoard[firstPosRow][i]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(firstPosRow, i));
+                        }
+                    } else {
                         break;
                     }
-                    if(gameBoard[lastPosRow][lastPosCol - i] != 0) {
-                        sb.append(gameBoard[lastPosRow][lastPosCol - i]);
+                }
+            } else {
+                reverse = true;
+                for(int i = lastPosCol; i >= 0; --i) {
+                    if(gameBoard[lastPosRow][i] != 0) {
+                        sb.append(gameBoard[lastPosRow][i]);
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(lastPosRow, i));
+                        }
+                    } else {
+                        break;
                     }
-
                 }
             }
 
-            for(int i = lastPosCol; i >= 0; --i) {
-                if(gameBoard[lastPosRow][i] != 0) {
-                    sb.append(gameBoard[lastPosRow][i]);
-                } else {
-                    break;
-                }
-            }
         }
         if(direction.equals("left")) {
-            reverse = false;
-            if(prevDirection.equals("right")) {
-                for(int i = cellPosList.size() - 1; i > 0; --i) {
-                    if(lastPosCol == 8) {
+            if(startDirectionIsNone) {
+                reverse = true;
+                for(int i = firstPosCol; i >= 0; --i) {
+                    if(gameBoard[firstPosRow][i] != 0) {
+                        sb.append(gameBoard[firstPosRow][i]);
+                    } else {
                         break;
                     }
-                    if(gameBoard[lastPosRow][lastPosCol + i] != 0) {
-                        sb.append(gameBoard[lastPosRow][lastPosCol + i]);
+                }
+            } else {
+                reverse = false;
+                for(int i = lastPosCol; i < 9; ++i) {
+                    if(gameBoard[lastPosRow][i] != 0) {
+                        sb.append(gameBoard[lastPosRow][i]);
+                    } else {
+                        break;
                     }
-
                 }
             }
 
-            for(int i = lastPosCol; i < 9; ++i) {
-                if(gameBoard[lastPosRow][i] != 0) {
-                    sb.append(gameBoard[lastPosRow][i]);
-                } else {
-                    break;
-                }
-            }
         }
 
         Log.i("MyAppTag", sb.toString());
@@ -283,8 +317,6 @@ public class Game {
         } else {
             return sb.toString();
         }
-
-
     }
 
 }
