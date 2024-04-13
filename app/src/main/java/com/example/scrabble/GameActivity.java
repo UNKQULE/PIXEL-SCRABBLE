@@ -12,9 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -55,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
     private String selectedScore = "";
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
+    private CountDownTimer gameTimer;
 
     public static boolean tripleWordMod = false;
 
@@ -67,14 +72,31 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        TextView timerTextView = findViewById(R.id.timerTextView);
+
+        int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
+        new CountDownTimer(timeLimitSeconds * 1000L, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long minutes = (millisUntilFinished / 1000) / 60;
+                long seconds = (millisUntilFinished / 1000) % 60;
+                timerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
+            }
+
+            @Override
+            public void onFinish() {
+                timerTextView.setText(R.string.timer_finished);
+            }
+        }.start();
+
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gameboard = gridLayout;
-        ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
-
         initializeBoard(gridLayout);
+        ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
         initializeHand(constraintLayout);
         initializeControlButtons();
     }
+
 
     private void initializeBoard(GridLayout gridLayout) {
         for (int row = 0; row < 9; row++) {
