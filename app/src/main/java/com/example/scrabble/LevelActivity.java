@@ -12,17 +12,19 @@ public class LevelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level);
 
-        ImageButton easy = findViewById(R.id.easy);
-        easy.setOnClickListener(v -> startGame());
+        ImageButton easyButton = findViewById(R.id.easy);
+        easyButton.setOnClickListener(v -> startGame(90));
 
-        ImageButton medium = findViewById(R.id.medium);
-        medium.setOnClickListener(v -> startGame());
+        ImageButton mediumButton = findViewById(R.id.medium);
+        mediumButton.setOnClickListener(v -> startGame(60));
 
-        ImageButton hard = findViewById(R.id.hard);
-        hard.setOnClickListener(v -> startGame());
+        ImageButton hardButton = findViewById(R.id.hard);
+        hardButton.setOnClickListener(v -> startGame(30));
     }
-    private void startGame() {
+
+    private void startGame(int seconds) {
         Intent intent = new Intent(LevelActivity.this, GameActivity.class);
+        intent.putExtra("TIME_LIMIT", seconds);
         startActivity(intent);
     }
 }

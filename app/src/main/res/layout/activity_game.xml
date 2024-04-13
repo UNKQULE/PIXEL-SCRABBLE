@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_image2">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_marginTop="40dp"
         android:layout_marginStart="20dp"
@@ -16,18 +17,16 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.2">
 
-        <ImageButton
-            android:id="@+id/menu_image"
-            android:layout_width="33dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:adjustViewBounds="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:scaleType="centerInside"
-            android:src="@drawable/menu_image"
+        <TextView
+            android:id="@+id/timerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:text="@string/timer"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <GridLayout
