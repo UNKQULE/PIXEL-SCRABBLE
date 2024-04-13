@@ -12,6 +12,9 @@ public class Tile extends RelativeLayout {
     private final TextView letter;
     private final TextView score;
 
+    private boolean w3Moded = false;
+    private boolean w3ModedTwice = false;
+
     public Tile(Context context) {
         super(context);
         ImageView tile = new ImageView(context);
@@ -97,5 +100,22 @@ public class Tile extends RelativeLayout {
     public void setW3() {
         letter.setTextColor(Color.RED);
         score.setTextColor(Color.RED);
+        w3Moded = true;
+    }
+
+    public boolean isModed() {
+        return w3Moded;
+    }
+
+    public void isModedTwice() {
+        w3ModedTwice = true;
+    }
+
+    public void setPrevious() {
+        if(w3ModedTwice) {
+            setW3();
+        } else {
+            setDefault();
+        }
     }
 }

@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -53,6 +53,9 @@ public class GameActivity extends AppCompatActivity {
             new Pair<>(5, 5)
     );
 
+    public static final List<Pair<Integer, Integer>> wordTiles = new ArrayList<>();
+    private static final List<Integer> moddedTilesList = new ArrayList<>();
+
     private Tile[] handTiles;
     private int prevSelectedHandTileId = -1;
     private char selectedChar = '0';
@@ -64,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
     public static boolean tripleWordMod = false;
 
     public int finalScore = 0;
-    private static int score = 0;
 
     private static View gameboard;
 
@@ -88,6 +90,9 @@ public class GameActivity extends AppCompatActivity {
                 timerTextView.setText(R.string.timer_finished);
             }
         }.start();
+
+        TextView scoreTextView = findViewById(R.id.scoreTextView);
+        scoreTextView.setText("Score " + finalScore);
 
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gameboard = gridLayout;
@@ -166,6 +171,8 @@ public class GameActivity extends AppCompatActivity {
         ImageButton returnBtn = findViewById(R.id.return_button_image);
         returnBtn.setVisibility(View.INVISIBLE);
         ImageButton swapBtn = findViewById(R.id.swap_button_image);
+        TextView scoreTextView = findViewById(R.id.scoreTextView);
+
 
         returnBtn.setOnClickListener(v -> {
             if (placedTilesCount != 0) {
@@ -183,8 +190,9 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
                 placedTilesCount = 0;
-                score = 0;
                 tripleWordMod = false;
+                returnTilesMod();
+                wordTiles.clear();
                 enterBtn.setVisibility(View.INVISIBLE);
                 swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
@@ -195,8 +203,8 @@ public class GameActivity extends AppCompatActivity {
             if (enterBtn.getVisibility() == View.VISIBLE) {
                 Game.endTurn();
                 placedTilesCount = 0;
-                finalScore = score;
-                score = 0;
+                finalScore += getScore();
+                scoreTextView.setText("Score " + finalScore);
                 if(Game.charList.size() >= 7) {
                     for (Tile handTile : handTiles) {
                         if (!handTile.isShown()) {
@@ -240,8 +248,11 @@ public class GameActivity extends AppCompatActivity {
                 selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
                 boardTile.setL3();
             }
+            if (tripleWordMod) {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                boardTile.setW3();
+            }
             if (boardCell.getText() == "33") {
-                score *= 3;
                 selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
                 for(int i = 0; i < Game.cellAndTileList.size(); ++i) {
                     Tile modTile = findViewById(Game.cellAndTileList.get(i).second);
@@ -262,7 +273,6 @@ public class GameActivity extends AppCompatActivity {
                 findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
             }
             selectedChar = '0';
-            score += Integer.parseInt(selectedScore);
             placedTilesCount++;
             turn();
         }
@@ -270,10 +280,41 @@ public class GameActivity extends AppCompatActivity {
 
     public static void getTileW3Modification(Pair<Integer, Integer> tileTag) {
         Tile modTile = gameboard.findViewWithTag(tileTag);
-        int tileScore = Integer.parseInt(modTile.getScore());
-        score += tileScore * 2;
-        modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
-        modTile.setW3();
+        if(Game.cellPosList.contains(tileTag)) {
+            if(!modTile.isModed()) {
+                modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                modTile.setW3();
+            }
+        } else {
+            modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+            if(modTile.isModed()) {
+                modTile.isModedTwice();
+            }
+            modTile.setW3();
+            moddedTilesList.add(modTile.getId());
+        }
+    }
+
+    private void returnTilesMod() {
+        if(!moddedTilesList.isEmpty()) {
+            for(int i = 0; i < moddedTilesList.size(); ++i) {
+                Tile modTile = findViewById(moddedTilesList.get(i));
+                modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) / 3));
+                modTile.setPrevious();
+            }
+            moddedTilesList.clear();
+        }
+
+    }
+
+    private int getScore() {
+        int score = 0;
+        for(int i = 0; i < wordTiles.size(); ++i) {
+            Tile wordTile = gameboard.findViewWithTag(wordTiles.get(i));
+            score += Integer.parseInt(wordTile.getScore());
+        }
+        wordTiles.clear();
+        return score;
     }
 
     private void handTileClick(Tile tile) {

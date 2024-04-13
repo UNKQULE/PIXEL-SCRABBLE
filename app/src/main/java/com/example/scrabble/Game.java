@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    public static final ArrayList<Pair<Character, String>> charList;
+    public static ArrayList<Pair<Character, String>> charList;
     private static final Random random;
 
-    public static final List<Pair<Integer, Integer>> cellAndTileList;
+    public static List<Pair<Integer, Integer>> cellAndTileList;
 
 
-    private static final List<Pair<Integer, Integer>> cellPosList;
+    public static List<Pair<Integer, Integer>> cellPosList;
 
     private static String direction = "none";
 
@@ -159,21 +159,18 @@ public class Game {
     }
 
     public static boolean checkWordInFile(Context context, String wordToFind) {
-        Log.i("MyAppTag",  wordToFind);
         AssetManager assetManager = context.getAssets();
         try (InputStream inputStream = assetManager.open("dictionary.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.equals(wordToFind)) {
-                    Log.i("MyAppTag", "finded");
                     return true; // Слово найдено
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i("MyAppTag", "not finded");
         return false; // Слово не найдено
     }
 
@@ -189,8 +186,6 @@ public class Game {
         int lastPosCol = cellPosList.get(cellPosList.size() - 1).second;
         boolean reverse = false;
 
-        Log.i("MyAppTag", direction);
-
 
         if(direction.equals("none")) {
             sb.append(gameBoard[lastPosRow][lastPosCol]);
@@ -202,6 +197,9 @@ public class Game {
                 for(int i = firstPosRow; i < 9; ++i) {
                     if(gameBoard[i][firstPosCol] != 0) {
                         sb.append(gameBoard[i][firstPosCol]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(i, firstPosCol))) {
+                            GameActivity.wordTiles.add(new Pair<>(i, firstPosCol));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(i, firstPosCol));
                         }
@@ -214,6 +212,9 @@ public class Game {
                 for(int i = lastPosRow; i >= 0; --i) {
                     if(gameBoard[i][lastPosCol] != 0) {
                         sb.append(gameBoard[i][lastPosCol]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(i, lastPosCol))) {
+                            GameActivity.wordTiles.add(new Pair<>(i, lastPosCol));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(i, lastPosCol));
                         }
@@ -230,6 +231,9 @@ public class Game {
                 for(int i = firstPosRow; i >= 0; --i) {
                     if(gameBoard[i][firstPosCol] != 0) {
                         sb.append(gameBoard[i][firstPosCol]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(i, firstPosCol))) {
+                            GameActivity.wordTiles.add(new Pair<>(i, firstPosCol));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(i, firstPosCol));
                         }
@@ -242,6 +246,9 @@ public class Game {
                 for(int i = lastPosRow; i < 9; ++i) {
                     if(gameBoard[i][lastPosCol] != 0) {
                         sb.append(gameBoard[i][lastPosCol]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(i, lastPosCol))) {
+                            GameActivity.wordTiles.add(new Pair<>(i, lastPosCol));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(i, lastPosCol));
                         }
@@ -258,6 +265,9 @@ public class Game {
                 for(int i = firstPosCol; i < 9; ++i) {
                     if(gameBoard[firstPosRow][i] != 0) {
                         sb.append(gameBoard[firstPosRow][i]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(firstPosRow, i))) {
+                            GameActivity.wordTiles.add(new Pair<>(firstPosRow, i));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(firstPosRow, i));
                         }
@@ -270,6 +280,9 @@ public class Game {
                 for(int i = lastPosCol; i >= 0; --i) {
                     if(gameBoard[lastPosRow][i] != 0) {
                         sb.append(gameBoard[lastPosRow][i]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(lastPosRow, i))) {
+                            GameActivity.wordTiles.add(new Pair<>(lastPosRow, i));
+                        }
                         if(GameActivity.tripleWordMod) {
                             GameActivity.getTileW3Modification(new Pair<>(lastPosRow, i));
                         }
@@ -286,6 +299,12 @@ public class Game {
                 for(int i = firstPosCol; i >= 0; --i) {
                     if(gameBoard[firstPosRow][i] != 0) {
                         sb.append(gameBoard[firstPosRow][i]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(firstPosRow, i))) {
+                            GameActivity.wordTiles.add(new Pair<>(firstPosRow, i));
+                        }
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(firstPosRow, i));
+                        }
                     } else {
                         break;
                     }
@@ -295,6 +314,12 @@ public class Game {
                 for(int i = lastPosCol; i < 9; ++i) {
                     if(gameBoard[lastPosRow][i] != 0) {
                         sb.append(gameBoard[lastPosRow][i]);
+                        if(!GameActivity.wordTiles.contains(new Pair<>(lastPosRow, i))) {
+                            GameActivity.wordTiles.add(new Pair<>(lastPosRow, i));
+                        }
+                        if(GameActivity.tripleWordMod) {
+                            GameActivity.getTileW3Modification(new Pair<>(lastPosRow, i));
+                        }
                     } else {
                         break;
                     }
