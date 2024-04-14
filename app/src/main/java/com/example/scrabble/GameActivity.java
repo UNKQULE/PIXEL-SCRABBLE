@@ -1,5 +1,6 @@
 package com.example.scrabble;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -21,7 +22,7 @@ import android.widget.TextView;
 
 public class GameActivity extends AppCompatActivity {
 
-    private final char[][] gameBoard = new char[9][9];
+    private char[][] gameBoard = new char[9][9];
 
     private static final List<Pair<Integer, Integer>> w3 = Arrays.asList(
             new Pair<>(0, 0),
@@ -74,9 +75,14 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
         if (savedInstanceState != null) {
             finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
+            gameBoard = (char[][]) savedInstanceState.getSerializable("GAME_BOARD");
+            isFirstWord = savedInstanceState.getBoolean("IS_FIRST_WORD", true);
+            tripleWordMod = savedInstanceState.getBoolean("TRIPLE_WORD_MOD", false);
         }
+
         TextView timerTextView = findViewById(R.id.timerTextView);
 
         int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
@@ -87,7 +93,6 @@ public class GameActivity extends AppCompatActivity {
                 long seconds = (millisUntilFinished / 1000) % 60;
                 timerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
             }
-
 
             @Override
             public void onFinish() {
@@ -101,7 +106,6 @@ public class GameActivity extends AppCompatActivity {
 
         TextView scoreTextView = findViewById(R.id.scoreTextView);
         scoreTextView.setText("Score " + finalScore);
-
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gameboard = gridLayout;
         initializeBoard(gridLayout);
@@ -172,18 +176,20 @@ public class GameActivity extends AppCompatActivity {
 
         constraintSet.applyTo(constraintLayout);
     }
+
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("FINAL_SCORE", finalScore);
+        outState.putSerializable("GAME_BOARD", gameBoard);
+        outState.putBoolean("IS_FIRST_WORD", isFirstWord);
+        outState.putBoolean("TRIPLE_WORD_MOD", tripleWordMod);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
-        }
+        finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
     }
     @Override
     public void onDestroy() {
