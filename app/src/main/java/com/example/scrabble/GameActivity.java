@@ -1,10 +1,10 @@
 package com.example.scrabble;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,18 +61,22 @@ public class GameActivity extends AppCompatActivity {
     private String selectedScore = "";
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
-    private CountDownTimer gameTimer;
 
     public static boolean tripleWordMod = false;
 
     public int finalScore = 0;
 
+    @SuppressLint("StaticFieldLeak")
     private static View gameboard;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        if (savedInstanceState != null) {
+            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
+        }
         TextView timerTextView = findViewById(R.id.timerTextView);
 
         int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
@@ -85,9 +88,14 @@ public class GameActivity extends AppCompatActivity {
                 timerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
             }
 
+
             @Override
             public void onFinish() {
-                timerTextView.setText(R.string.timer_finished);
+                Intent intent = new Intent(GameActivity.this, ScoreActivity.class);
+                intent.putExtra("FINAL_SCORE", finalScore);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
         }.start();
 
@@ -164,7 +172,25 @@ public class GameActivity extends AppCompatActivity {
 
         constraintSet.applyTo(constraintLayout);
     }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("FINAL_SCORE", finalScore);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @SuppressLint("SetTextI18n")
     private void initializeControlButtons() {
         ImageButton enterBtn = findViewById(R.id.enter_button_image);
         enterBtn.setVisibility(View.INVISIBLE);
@@ -341,6 +367,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private Button getBoardCell(int row, int col) {
         Pair<Integer, Integer> pos = new Pair<>(row, col);
         Button boardCell;
@@ -377,4 +404,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
     }
+
+
 }

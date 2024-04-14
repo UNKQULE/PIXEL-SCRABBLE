@@ -1,0 +1,41 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@drawable/background_image">
+    <TextView
+        android:id="@+id/score_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="55sp"
+        android:textColor="@color/white"
+        android:text="@string/score"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center_horizontal">
+        <ImageButton
+            android:id="@+id/play_again_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/empty_button" />
+
+        <TextView
+            android:id="@+id/play_again_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="65sp"
+            android:textColor="@color/black"
+            android:text="@string/play_again" />
+    </FrameLayout>
+
+</LinearLayout>

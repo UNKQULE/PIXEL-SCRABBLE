@@ -9,5 +9,7 @@
     <string name="medium">medium</string>
     <string name="hard">hard</string>
     <string name="timer">Timer</string>
-    <string name="timer_finished">Time is up!</string>
+    <string name="timer_finished">"Time's up!"</string>
+    <string name="score">"Your score"</string>
+    <string name="play_again">MENU</string>
 </resources>
