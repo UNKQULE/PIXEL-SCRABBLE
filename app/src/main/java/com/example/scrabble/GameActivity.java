@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 public class GameActivity extends AppCompatActivity {
 
+    private boolean start;
+
     private char[][] gameBoard;
 
     private static final List<Pair<Integer, Integer>> w3 = Arrays.asList(
@@ -76,12 +78,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        start = true;
         setContentView(R.layout.activity_game);
-
-
-
-
-
         TextView scoreTextView = findViewById(R.id.scoreTextView);
         scoreTextView.setText("Score ");
         GridLayout gridLayout = findViewById(R.id.gridLayout);
@@ -92,17 +90,22 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
         super.onStart();
-        startGame();
-        Game.start();
-        initializeHand(constraintLayout);
+        if(start) {
+            ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
+            startGame();
+            Game.start();
+            initializeHand(constraintLayout);
+            start = false;
+        }
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         timer.cancel();
+        start = true;
 
     }
 
