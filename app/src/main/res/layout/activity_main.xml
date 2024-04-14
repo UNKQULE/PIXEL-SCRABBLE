@@ -7,42 +7,76 @@
     android:padding="16dp"
     android:background="@drawable/background_image">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp">
 
-    <Button
-        android:id="@+id/button_play"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:textSize="60sp"
-        android:textColor="@color/black"
-        android:text="PLAY"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        android:background="@drawable/empty_button"
-        android:contentDescription="@string/play"
-        android:layout_marginTop="160dp"/>
-    <Button
-        android:id="@+id/button_stats"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:textSize="60sp"
-        android:textColor="@color/black"
-        android:text="STATS"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        android:background="@drawable/empty_button"
-        android:contentDescription="@string/stats"
-        android:layout_marginTop="16dp"/>
+        <ImageButton
+            android:id="@+id/button_play"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"
+            android:contentDescription="@string/play"/>
 
-    <Button
-        android:id="@+id/button_exit"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:textSize="60sp"
-        android:textColor="@color/black"
-        android:text="EXIT"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        android:background="@drawable/empty_button"
-        android:contentDescription="@string/exit"
-        android:layout_marginTop="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60sp"
+            android:textColor="@color/black"
+            android:text="@string/play"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/button_stats"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"
+            android:contentDescription="@string/stats"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="55sp"
+            android:textColor="@color/black"
+            android:text="@string/stats"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/button_exit"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"
+            android:contentDescription="@string/exit"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60sp"
+            android:textColor="@color/black"
+            android:text="@string/exit"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
 </LinearLayout>
