@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -87,9 +88,14 @@ public class GameActivity extends AppCompatActivity {
                 timerTextView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
             }
 
+
             @Override
             public void onFinish() {
                 timerTextView.setText(R.string.timer_finished);
+                Intent intent = new Intent(GameActivity.this, ScoreActivity.class);
+                intent.putExtra("FINAL_SCORE", finalScore);
+                startActivity(intent);
+                finish();
             }
         }.start();
 
@@ -165,6 +171,10 @@ public class GameActivity extends AppCompatActivity {
                 tilesIds, null, ConstraintSet.CHAIN_SPREAD);
 
         constraintSet.applyTo(constraintLayout);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @SuppressLint("SetTextI18n")
@@ -381,4 +391,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
     }
+
+
 }
