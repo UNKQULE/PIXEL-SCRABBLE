@@ -1,10 +1,8 @@
 package com.example.scrabble;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +74,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        if (savedInstanceState != null) {
+            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
+        }
         TextView timerTextView = findViewById(R.id.timerTextView);
 
         int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
@@ -91,9 +91,9 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                timerTextView.setText(R.string.timer_finished);
                 Intent intent = new Intent(GameActivity.this, ScoreActivity.class);
                 intent.putExtra("FINAL_SCORE", finalScore);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
@@ -171,6 +171,19 @@ public class GameActivity extends AppCompatActivity {
                 tilesIds, null, ConstraintSet.CHAIN_SPREAD);
 
         constraintSet.applyTo(constraintLayout);
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("FINAL_SCORE", finalScore);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
+        }
     }
     @Override
     public void onDestroy() {
