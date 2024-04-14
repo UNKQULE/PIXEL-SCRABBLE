@@ -16,25 +16,28 @@ import java.util.Random;
 
 public class Game {
     public static ArrayList<Pair<Character, String>> charList;
-    private static final Random random;
+    private static Random random;
 
     public static List<Pair<Integer, Integer>> cellAndTileList;
 
 
     public static List<Pair<Integer, Integer>> cellPosList;
 
-    private static String direction = "none";
+    private static String direction;
 
-    private static boolean accessToFind = true;
-    private static boolean startDirectionIsNone = false;
+    private static boolean accessToFind;
+    private static boolean startDirectionIsNone;
 
 
-    static  {
+    static void start() {
         charList = new ArrayList<>();
         random = new Random();
         cellAndTileList = new ArrayList<>();
         cellPosList = new ArrayList<>();
         initializeList();
+        direction = "none";
+        accessToFind = true;
+        startDirectionIsNone = false;
     }
 
     private static void initializeList() {
@@ -160,6 +163,7 @@ public class Game {
 
     public static boolean checkWordInFile(Context context, String wordToFind) {
         AssetManager assetManager = context.getAssets();
+        Log.i("MyAppTag", wordToFind + " " + cellAndTileList.size());
         try (InputStream inputStream = assetManager.open("dictionary.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;

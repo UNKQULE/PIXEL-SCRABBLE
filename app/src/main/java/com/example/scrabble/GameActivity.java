@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 public class GameActivity extends AppCompatActivity {
 
-    private char[][] gameBoard = new char[9][9];
+    private char[][] gameBoard;
 
     private static final List<Pair<Integer, Integer>> w3 = Arrays.asList(
             new Pair<>(0, 0),
@@ -53,19 +53,21 @@ public class GameActivity extends AppCompatActivity {
             new Pair<>(5, 5)
     );
 
-    public static final List<Pair<Integer, Integer>> wordTiles = new ArrayList<>();
-    private static final List<Integer> moddedTilesList = new ArrayList<>();
+    public static List<Pair<Integer, Integer>> wordTiles;
+    private static List<Integer> moddedTilesList;
 
     private Tile[] handTiles;
-    private int prevSelectedHandTileId = -1;
-    private char selectedChar = '0';
-    private String selectedScore = "";
-    private int placedTilesCount = 0;
-    public static boolean isFirstWord = true;
+    private int prevSelectedHandTileId;
+    private char selectedChar;
+    private String selectedScore;
+    private int placedTilesCount;
+    public static boolean isFirstWord;
 
-    public static boolean tripleWordMod = false;
+    public static boolean tripleWordMod;
 
-    public int finalScore = 0;
+    public int finalScore;
+
+    private CountDownTimer timer;
 
     @SuppressLint("StaticFieldLeak")
     private static View gameboard;
@@ -76,17 +78,52 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        if (savedInstanceState != null) {
-            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
-            gameBoard = (char[][]) savedInstanceState.getSerializable("GAME_BOARD");
-            isFirstWord = savedInstanceState.getBoolean("IS_FIRST_WORD", true);
-            tripleWordMod = savedInstanceState.getBoolean("TRIPLE_WORD_MOD", false);
-        }
 
+
+
+
+        TextView scoreTextView = findViewById(R.id.scoreTextView);
+        scoreTextView.setText("Score ");
+        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        gameboard = gridLayout;
+        initializeBoard(gridLayout);
+        initializeControlButtons();
+    }
+
+    @Override
+    protected void onStart() {
+        ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
+        super.onStart();
+        startGame();
+        Game.start();
+        initializeHand(constraintLayout);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+
+    }
+
+    private void startGame() {
+        wordTiles = new ArrayList<>();
+        moddedTilesList = new ArrayList<>();
+        prevSelectedHandTileId = -1;
+        selectedChar = '0';
+        placedTilesCount = 0;
+        isFirstWord = true;
+        tripleWordMod = false;
+        finalScore = 0;
+        gameBoard = new char[9][9];
+        setTimer();
+
+    }
+
+    private void setTimer() {
+        int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 0);
         TextView timerTextView = findViewById(R.id.timerTextView);
-
-        int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
-        new CountDownTimer(timeLimitSeconds * 1000L, 1000) {
+        timer = new CountDownTimer(timeLimitSeconds * 1000L, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long minutes = (millisUntilFinished / 1000) / 60;
@@ -103,17 +140,7 @@ public class GameActivity extends AppCompatActivity {
                 finish();
             }
         }.start();
-
-        TextView scoreTextView = findViewById(R.id.scoreTextView);
-        scoreTextView.setText("Score " + finalScore);
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
-        gameboard = gridLayout;
-        initializeBoard(gridLayout);
-        ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
-        initializeHand(constraintLayout);
-        initializeControlButtons();
     }
-
 
     private void initializeBoard(GridLayout gridLayout) {
         for (int row = 0; row < 9; row++) {
@@ -191,10 +218,6 @@ public class GameActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @SuppressLint("SetTextI18n")
     private void initializeControlButtons() {
@@ -237,17 +260,13 @@ public class GameActivity extends AppCompatActivity {
                 placedTilesCount = 0;
                 finalScore += getScore();
                 scoreTextView.setText("Score " + finalScore);
-                if(Game.charList.size() >= 7) {
-                    for (Tile handTile : handTiles) {
-                        if (!handTile.isShown()) {
-                            Pair<Character, String> tileValues = Game.getRandomChar();
-                            handTile.setLetter(String.valueOf(tileValues.first));
-                            handTile.setScore(String.valueOf(tileValues.second));
-                            handTile.setVisibility(View.VISIBLE);
-                        }
+                for (Tile handTile : handTiles) {
+                    if (!handTile.isShown()) {
+                        Pair<Character, String> tileValues = Game.getRandomChar();
+                        handTile.setLetter(String.valueOf(tileValues.first));
+                        handTile.setScore(String.valueOf(tileValues.second));
+                        handTile.setVisibility(View.VISIBLE);
                     }
-                } else {
-                    finish();
                 }
 
                 isFirstWord = false;
