@@ -20,7 +20,7 @@ public class ScoreActivity extends AppCompatActivity {
         ImageButton playAgainButton = findViewById(R.id.play_again_button);
         playAgainButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(ScoreActivity.this, MainActivity.class);
+            Intent intent = new Intent(ScoreActivity.this, LevelActivity.class);
             startActivity(intent);
         });
 
