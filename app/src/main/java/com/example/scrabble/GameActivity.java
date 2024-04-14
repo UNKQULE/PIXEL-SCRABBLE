@@ -2,9 +2,9 @@ package com.example.scrabble;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -53,12 +53,22 @@ public class GameActivity extends AppCompatActivity {
             new Pair<>(5, 5)
     );
 
-    private Button[] handTiles;
+    public static final List<Pair<Integer, Integer>> wordTiles = new ArrayList<>();
+    private static final List<Integer> moddedTilesList = new ArrayList<>();
+
+    private Tile[] handTiles;
     private int prevSelectedHandTileId = -1;
     private char selectedChar = '0';
+    private String selectedScore = "";
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
     private CountDownTimer gameTimer;
+
+    public static boolean tripleWordMod = false;
+
+    public int finalScore = 0;
+
+    private static View gameboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +91,11 @@ public class GameActivity extends AppCompatActivity {
             }
         }.start();
 
+        TextView scoreTextView = findViewById(R.id.scoreTextView);
+        scoreTextView.setText("Score " + finalScore);
 
         GridLayout gridLayout = findViewById(R.id.gridLayout);
+        gameboard = gridLayout;
         initializeBoard(gridLayout);
         ConstraintLayout constraintLayout = findViewById(R.id.botConstraint);
         initializeHand(constraintLayout);
@@ -95,9 +108,13 @@ public class GameActivity extends AppCompatActivity {
             for (int col = 0; col < 9; col++) {
                 Button boardCell = getBoardCell(row, col);
                 boardCell.setId(View.generateViewId());
+                Tile boardTile = new Tile(this);
+                boardTile.setId(View.generateViewId());
+                boardTile.setTag(new Pair<>(row, col));
+                boardTile.setVisibility(View.GONE);
                 int finalRow = row;
                 int finalCol = col;
-                boardCell.setOnClickListener(v -> boardCellClick(boardCell, finalRow, finalCol));
+                boardCell.setOnClickListener(v -> boardCellClick(boardCell, boardTile, finalRow, finalCol));
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = 0;
@@ -107,18 +124,20 @@ public class GameActivity extends AppCompatActivity {
                 params.setMargins(0, 0, 0, 0);
 
                 gridLayout.addView(boardCell, params);
+                gridLayout.addView(boardTile, params);
             }
         }
     }
 
     private void initializeHand(ConstraintLayout constraintLayout) {
-        handTiles = new Button[7];
+        handTiles = new Tile[7];
         for (int i = 0; i < 7; i++) {
-            Button handTile = new Button(new ContextThemeWrapper(this, R.style.HandTile), null, 0);
+            Tile handTile = new Tile(this);
             handTile.setId(View.generateViewId());
             handTiles[i] = handTile;
-            char letter = Game.getRandomChar();
-            handTile.setText(String.valueOf(letter));
+            Pair<Character, String> tileValues = Game.getRandomChar();
+            handTile.setLetter(String.valueOf(tileValues.first));
+            handTile.setScore(String.valueOf(tileValues.second));
             handTile.setOnClickListener(v -> handTileClick(handTile));
 
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
@@ -133,15 +152,15 @@ public class GameActivity extends AppCompatActivity {
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(constraintLayout);
 
-        int[] buttonIds = new int[handTiles.length];
+        int[] tilesIds = new int[handTiles.length];
         for (int i = 0; i < handTiles.length; i++) {
-            buttonIds[i] = handTiles[i].getId();
+            tilesIds[i] = handTiles[i].getId();
         }
 
         constraintSet.createHorizontalChain(
                 ConstraintSet.PARENT_ID, ConstraintSet.LEFT,
                 ConstraintSet.PARENT_ID, ConstraintSet.RIGHT,
-                buttonIds, null, ConstraintSet.CHAIN_SPREAD);
+                tilesIds, null, ConstraintSet.CHAIN_SPREAD);
 
         constraintSet.applyTo(constraintLayout);
     }
@@ -152,19 +171,28 @@ public class GameActivity extends AppCompatActivity {
         ImageButton returnBtn = findViewById(R.id.return_button_image);
         returnBtn.setVisibility(View.INVISIBLE);
         ImageButton swapBtn = findViewById(R.id.swap_button_image);
+        TextView scoreTextView = findViewById(R.id.scoreTextView);
+
 
         returnBtn.setOnClickListener(v -> {
             if (placedTilesCount != 0) {
                 for(int i = 0; i < placedTilesCount; ++i) {
-                    Button returnTile = findViewById(Game.returnTileId());
+                    Pair<Integer, Integer> ids = Game.returnCellAndTileId();
+                    Button returnCell = findViewById(ids.first);
+                    returnCell.setVisibility(View.VISIBLE);
+                    Tile returnTile = findViewById(ids.second);
+                    returnTile.setVisibility(View.GONE);
                     Game.undoLastMove(returnTile, gameBoard);
                 }
-                for (Button handTile : handTiles) {
+                for (Tile handTile : handTiles) {
                     if (!handTile.isShown()) {
                         handTile.setVisibility(View.VISIBLE);
                     }
                 }
                 placedTilesCount = 0;
+                tripleWordMod = false;
+                returnTilesMod();
+                wordTiles.clear();
                 enterBtn.setVisibility(View.INVISIBLE);
                 swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
@@ -175,11 +203,14 @@ public class GameActivity extends AppCompatActivity {
             if (enterBtn.getVisibility() == View.VISIBLE) {
                 Game.endTurn();
                 placedTilesCount = 0;
+                finalScore += getScore();
+                scoreTextView.setText("Score " + finalScore);
                 if(Game.charList.size() >= 7) {
-                    for (Button handTile : handTiles) {
+                    for (Tile handTile : handTiles) {
                         if (!handTile.isShown()) {
-                            char letter = Game.getRandomChar();
-                            handTile.setText(String.valueOf(letter));
+                            Pair<Character, String> tileValues = Game.getRandomChar();
+                            handTile.setLetter(String.valueOf(tileValues.first));
+                            handTile.setScore(String.valueOf(tileValues.second));
                             handTile.setVisibility(View.VISIBLE);
                         }
                     }
@@ -188,6 +219,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 isFirstWord = false;
+                tripleWordMod = false;
                 enterBtn.setVisibility(View.INVISIBLE);
                 swapBtn.setVisibility(View.VISIBLE);
                 returnBtn.setVisibility(View.INVISIBLE);
@@ -196,18 +228,43 @@ public class GameActivity extends AppCompatActivity {
 
         swapBtn.setOnClickListener(v -> {
             if(Game.charList.size() >= 7) {
-                for (Button handTile : handTiles) {
-                    char letter = Game.getRandomChar();
-                    Game.addChar(handTile.getText().charAt(0));
-                    handTile.setText(String.valueOf(letter));
+                for (Tile handTile : handTiles) {
+                    Game.addChar(handTile.getLetter(), handTile.getScore());
+                    Pair<Character, String> tileValues = Game.getRandomChar();
+                    handTile.setLetter(String.valueOf(tileValues.first));
+                    handTile.setScore(String.valueOf(tileValues.second));
                 }
             }
         });
     }
 
-    private void boardCellClick(Button boardCell, int row, int col) {
-        if (selectedChar != '0' && boardCell.getText().toString().isEmpty()) {
-            Game.addTile(boardCell, selectedChar, row, col, gameBoard);
+    private void boardCellClick(Button boardCell,Tile boardTile, int row, int col) {
+        if (selectedChar != '0' && boardCell.getVisibility() == View.VISIBLE) {
+            if (boardCell.getText() == "2") {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 2);
+                boardTile.setL2();
+            }
+            if (boardCell.getText() == "3") {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                boardTile.setL3();
+            }
+            if (tripleWordMod) {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                boardTile.setW3();
+            }
+            if (boardCell.getText() == "33") {
+                selectedScore = String.valueOf(Integer.parseInt(selectedScore) * 3);
+                for(int i = 0; i < Game.cellAndTileList.size(); ++i) {
+                    Tile modTile = findViewById(Game.cellAndTileList.get(i).second);
+                    modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                    modTile.setW3();
+                }
+                boardTile.setW3();
+                tripleWordMod = true;
+            }
+            boardCell.setVisibility(View.GONE);
+            boardTile.setVisibility(View.VISIBLE);
+            Game.addTile(boardCell, boardTile, selectedChar, selectedScore, row, col, gameBoard);
             Game.hasNeighbours(gameBoard, row, col);
             findViewById(R.id.return_button_image).setVisibility(View.VISIBLE);
             findViewById(R.id.swap_button_image).setVisibility(View.INVISIBLE);
@@ -221,39 +278,86 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void handTileClick(Button button) {
-        if (prevSelectedHandTileId != -1 && prevSelectedHandTileId != button.getId()) {
-            Button prevSelectedButton = findViewById(prevSelectedHandTileId);
-            ViewGroup.LayoutParams prevLayoutParams = prevSelectedButton.getLayoutParams();
-            prevLayoutParams.width = (int) (prevSelectedButton.getWidth() / 1.2);
-            prevLayoutParams.height = (int) (prevSelectedButton.getHeight() / 1.2);
-            prevSelectedButton.setLayoutParams(prevLayoutParams);
+    public static void getTileW3Modification(Pair<Integer, Integer> tileTag) {
+        Tile modTile = gameboard.findViewWithTag(tileTag);
+        if(Game.cellPosList.contains(tileTag)) {
+            if(!modTile.isModed()) {
+                modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                modTile.setW3();
+            }
+        } else {
+            modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+            if(modTile.isModed()) {
+                modTile.isModedTwice();
+            }
+            modTile.setW3();
+            moddedTilesList.add(modTile.getId());
+        }
+    }
+
+    private void returnTilesMod() {
+        if(!moddedTilesList.isEmpty()) {
+            for(int i = 0; i < moddedTilesList.size(); ++i) {
+                Tile modTile = findViewById(moddedTilesList.get(i));
+                modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) / 3));
+                modTile.setPrevious();
+            }
+            moddedTilesList.clear();
         }
 
-        selectedChar = button.getText().charAt(0);
-        if (prevSelectedHandTileId != button.getId()) {
-            int newWidth = (int) (button.getWidth() * 1.2);
-            int newHeight = (int) (button.getHeight() * 1.2);
+    }
 
-            ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
+    private int getScore() {
+        int score = 0;
+        for(int i = 0; i < wordTiles.size(); ++i) {
+            Tile wordTile = gameboard.findViewWithTag(wordTiles.get(i));
+            score += Integer.parseInt(wordTile.getScore());
+        }
+        wordTiles.clear();
+        return score;
+    }
+
+    private void handTileClick(Tile tile) {
+        if (prevSelectedHandTileId != -1 && prevSelectedHandTileId != tile.getId()) {
+            Tile prevSelectedTile = findViewById(prevSelectedHandTileId);
+            ViewGroup.LayoutParams prevLayoutParams = prevSelectedTile.getLayoutParams();
+            prevLayoutParams.width = (int) (prevSelectedTile.getWidth() / 1.2);
+            prevLayoutParams.height = (int) (prevSelectedTile.getHeight() / 1.2);
+            prevSelectedTile.setLayoutParams(prevLayoutParams);
+        }
+
+        selectedChar = tile.getLetter();
+        selectedScore = tile.getScore();
+        if (prevSelectedHandTileId != tile.getId()) {
+            int newWidth = (int) (tile.getWidth() * 1.2);
+            int newHeight = (int) (tile.getHeight() * 1.2);
+
+            ViewGroup.LayoutParams layoutParams = tile.getLayoutParams();
             layoutParams.width = newWidth;
             layoutParams.height = newHeight;
 
-            button.setLayoutParams(layoutParams);
-            prevSelectedHandTileId = button.getId();
+            tile.setLayoutParams(layoutParams);
+            prevSelectedHandTileId = tile.getId();
         }
     }
 
     private Button getBoardCell(int row, int col) {
         Pair<Integer, Integer> pos = new Pair<>(row, col);
+        Button boardCell;
         if(w3.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.W3Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.W3Place), null, 0);
+            boardCell.setText("33");
+            return boardCell;
         }
         if(l3.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.L3Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.L3Place), null, 0);
+            boardCell.setText("3");
+            return boardCell;
         }
         if(l2.contains(pos)) {
-            return new Button(new android.view.ContextThemeWrapper(this, R.style.L2Place), null, 0);
+            boardCell = new Button(new android.view.ContextThemeWrapper(this, R.style.L2Place), null, 0);
+            boardCell.setText("2");
+            return boardCell;
         }
         if(pos.equals(new Pair<>(4, 4))) {
             return new Button(new android.view.ContextThemeWrapper(this, R.style.StartPlace), null, 0);

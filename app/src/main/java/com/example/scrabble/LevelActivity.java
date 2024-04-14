@@ -13,13 +13,13 @@ public class LevelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_level);
 
         ImageButton easyButton = findViewById(R.id.easy);
-        easyButton.setOnClickListener(v -> startGame(90));
+        easyButton.setOnClickListener(v -> startGame(300));
 
         ImageButton mediumButton = findViewById(R.id.medium);
-        mediumButton.setOnClickListener(v -> startGame(60));
+        mediumButton.setOnClickListener(v -> startGame(180));
 
         ImageButton hardButton = findViewById(R.id.hard);
-        hardButton.setOnClickListener(v -> startGame(30));
+        hardButton.setOnClickListener(v -> startGame(90));
     }
 
     private void startGame(int seconds) {
