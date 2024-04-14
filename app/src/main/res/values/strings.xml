@@ -10,4 +10,6 @@
     <string name="hard">hard</string>
     <string name="timer">Timer</string>
     <string name="timer_finished">Time is up!</string>
+    <string name="score">Score</string>
+    <string name="play_again">PLAY AGAIN</string>
 </resources>

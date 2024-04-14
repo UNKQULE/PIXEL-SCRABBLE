@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_image">
 
-    <!-- Кнопка Easy -->
     <ImageButton
         android:id="@+id/easy"
         android:layout_width="200dp"

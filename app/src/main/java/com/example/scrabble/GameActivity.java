@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -62,14 +63,15 @@ public class GameActivity extends AppCompatActivity {
     private String selectedScore = "";
     private int placedTilesCount = 0;
     public static boolean isFirstWord = true;
-    private CountDownTimer gameTimer;
 
     public static boolean tripleWordMod = false;
 
     public int finalScore = 0;
 
+    @SuppressLint("StaticFieldLeak")
     private static View gameboard;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +167,7 @@ public class GameActivity extends AppCompatActivity {
         constraintSet.applyTo(constraintLayout);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initializeControlButtons() {
         ImageButton enterBtn = findViewById(R.id.enter_button_image);
         enterBtn.setVisibility(View.INVISIBLE);
@@ -341,6 +344,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private Button getBoardCell(int row, int col) {
         Pair<Integer, Integer> pos = new Pair<>(row, col);
         Button boardCell;
