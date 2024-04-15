@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 public class GameActivity extends AppCompatActivity {
 
-    private char[][] gameBoard = new char[9][9];
+    private static final char[][] gameBoard = new char[9][9];
 
     private static final List<Pair<Integer, Integer>> w3 = Arrays.asList(
             new Pair<>(0, 0),
@@ -69,6 +69,7 @@ public class GameActivity extends AppCompatActivity {
 
     private static View gameboard;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
