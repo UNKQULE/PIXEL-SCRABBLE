@@ -67,26 +67,15 @@ public class GameActivity extends AppCompatActivity {
 
     public int finalScore = 0;
 
-    @SuppressLint("StaticFieldLeak")
     private static View gameboard;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
-        if (savedInstanceState != null) {
-            finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
-            gameBoard = (char[][]) savedInstanceState.getSerializable("GAME_BOARD");
-            isFirstWord = savedInstanceState.getBoolean("IS_FIRST_WORD", true);
-            tripleWordMod = savedInstanceState.getBoolean("TRIPLE_WORD_MOD", false);
-        }
-
         TextView timerTextView = findViewById(R.id.timerTextView);
-
-        int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 30);
-        new CountDownTimer(timeLimitSeconds * 1000L, 1000) {
+        int timeLimitSeconds = getIntent().getIntExtra("TIME_LIMIT", 0);
+        new CountDownTimer (timeLimitSeconds * 1000L, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long minutes = (millisUntilFinished / 1000) / 60;
@@ -103,7 +92,6 @@ public class GameActivity extends AppCompatActivity {
                 finish();
             }
         }.start();
-
         TextView scoreTextView = findViewById(R.id.scoreTextView);
         scoreTextView.setText("Score " + finalScore);
         GridLayout gridLayout = findViewById(R.id.gridLayout);
@@ -196,7 +184,6 @@ public class GameActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @SuppressLint("SetTextI18n")
     private void initializeControlButtons() {
         ImageButton enterBtn = findViewById(R.id.enter_button_image);
         enterBtn.setVisibility(View.INVISIBLE);
@@ -408,8 +395,5 @@ public class GameActivity extends AppCompatActivity {
         else {
             findViewById(R.id.enter_button_image).setVisibility(View.INVISIBLE);
         }
-
     }
-
-
 }
