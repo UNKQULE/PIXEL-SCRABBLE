@@ -71,10 +71,8 @@ public class GameActivity extends AppCompatActivity {
 
     private CountDownTimer timer;
 
-    @SuppressLint("StaticFieldLeak")
     private static View gameboard;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -222,7 +220,6 @@ public class GameActivity extends AppCompatActivity {
         finalScore = savedInstanceState.getInt("FINAL_SCORE", 0);
     }
 
-    @SuppressLint("SetTextI18n")
     private void initializeControlButtons() {
         ImageButton enterBtn = findViewById(R.id.enter_button_image);
         enterBtn.setVisibility(View.INVISIBLE);
@@ -430,8 +427,5 @@ public class GameActivity extends AppCompatActivity {
         else {
             findViewById(R.id.enter_button_image).setVisibility(View.INVISIBLE);
         }
-
     }
-
-
 }

@@ -12,4 +12,5 @@
     <string name="timer_finished">"Time's up!"</string>
     <string name="score">"Your score"</string>
     <string name="play_again">PLAY</string>
+    <string name="nickname">Enter your nickname</string>
 </resources>
