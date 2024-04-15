@@ -2,6 +2,7 @@ package com.example.scrabble;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,8 +28,7 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста посередине
         letter = new TextView(context);
-        int pixels = spToPx(context, 14);
-        letter.setTextSize(pixels);
+        setTextSizeInDp(letter, 46);
         letter.setTextColor(Color.BLACK);
         letter.setText("");
         letter.setGravity(Gravity.CENTER); // Выравнивание по центру
@@ -41,8 +41,7 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста в правом верхнем углу
         score = new TextView(context);
-        pixels = spToPx(context, 6);
-        score.setTextSize(pixels);
+        setTextSizeInDp(score, 20);
         score.setTextColor(Color.BLACK);
         score.setText("");
         RelativeLayout.LayoutParams topRightParams = new RelativeLayout.LayoutParams(
@@ -56,9 +55,11 @@ public class Tile extends RelativeLayout {
         addView(score, topRightParams); // Добавляем TextView в layout
     }
 
-    public static int spToPx(Context context, float spValue) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (spValue * scaledDensity + 0.5f);
+
+    public void setTextSizeInDp(TextView textView, float sizeInDp) {
+        float scale = textView.getContext().getResources().getDisplayMetrics().density;
+        float sizeInPx = sizeInDp * scale;
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeInPx);
     }
 
     public static int pxToDp(Context context, float px) {
