@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="40sp"
+            android:textSize="35dp"
             android:text="EASY"
             android:textAlignment="center"
             />
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="40sp"
+            android:textSize="35dp"
             android:text="MEDIUM"
             android:textAlignment="center"/>
         <TextView
@@ -37,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="40sp"
+            android:textSize="35dp"
             android:text="HARD"
             android:textAlignment="center"/>
     </LinearLayout>
