@@ -3,6 +3,7 @@ package com.example.scrabble;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.widget.ImageButton;
@@ -45,8 +46,12 @@ public class MainActivity extends Activity {
     }
 
     private void startGame() {
+        editTextNickname = findViewById(R.id.edittext_nickname);
+        User.username = String.valueOf(editTextNickname.getText());
+        Log.i("MyAppTag", User.username);
         Intent intent = new Intent(MainActivity.this, LevelActivity.class);
         startActivity(intent);
+
     }
 
     private void showStats() {

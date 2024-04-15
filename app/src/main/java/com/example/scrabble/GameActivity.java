@@ -338,12 +338,21 @@ public class GameActivity extends AppCompatActivity {
                 modTile.setW3();
             }
         } else {
-            modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
-            if(modTile.isModed()) {
-                modTile.isModedTwice();
+            if(!modTile.isModed()) {
+                modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                modTile.setW3();
+                moddedTilesList.add(modTile.getId());
+            } else {
+                if(modTile.w3ModedTwice) {
+                    modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) * 3));
+                    modTile.w3ModedTwice = false;
+                    modTile.wasW3ModedTwice = true;
+                    if(!moddedTilesList.contains(modTile.getId())) {
+                        moddedTilesList.add(modTile.getId());
+                    }
+                }
+
             }
-            modTile.setW3();
-            moddedTilesList.add(modTile.getId());
         }
     }
 
@@ -352,7 +361,11 @@ public class GameActivity extends AppCompatActivity {
             for(int i = 0; i < moddedTilesList.size(); ++i) {
                 Tile modTile = findViewById(moddedTilesList.get(i));
                 modTile.setScore(String.valueOf(Integer.parseInt(modTile.getScore()) / 3));
-                modTile.setPrevious();
+                if(!modTile.wasW3ModedTwice) {
+                    modTile.setPrevious();
+                } else {
+                    modTile.w3ModedTwice = true;
+                }
             }
             moddedTilesList.clear();
         }
@@ -364,6 +377,10 @@ public class GameActivity extends AppCompatActivity {
         for(int i = 0; i < wordTiles.size(); ++i) {
             Tile wordTile = gameboard.findViewWithTag(wordTiles.get(i));
             score += Integer.parseInt(wordTile.getScore());
+            if(wordTile.isModed()) {
+                wordTile.w3ModedTwice = true;
+            }
+
         }
         wordTiles.clear();
         return score;
