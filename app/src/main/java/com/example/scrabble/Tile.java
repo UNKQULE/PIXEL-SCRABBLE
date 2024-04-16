@@ -13,8 +13,10 @@ public class Tile extends RelativeLayout {
     private final TextView letter;
     private final TextView score;
 
-    private boolean w3Moded = false;
-    private boolean w3ModedTwice = false;
+    public boolean w3Moded = false;
+    public boolean w3ModedTwice = false;
+
+    public boolean wasW3ModedTwice = false;
 
     public Tile(Context context) {
         super(context);
@@ -108,15 +110,14 @@ public class Tile extends RelativeLayout {
         return w3Moded;
     }
 
-    public void isModedTwice() {
-        w3ModedTwice = true;
-    }
-
     public void setPrevious() {
         if(w3ModedTwice) {
-            setW3();
-        } else {
+            w3ModedTwice = false;
+            return;
+        }
+        if(w3Moded) {
             setDefault();
+            w3Moded = false;
         }
     }
 }

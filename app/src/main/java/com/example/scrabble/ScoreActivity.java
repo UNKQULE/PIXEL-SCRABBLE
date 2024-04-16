@@ -3,6 +3,7 @@ package com.example.scrabble;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -27,6 +28,17 @@ public class ScoreActivity extends AppCompatActivity {
 
         int finalScore = getIntent().getIntExtra("FINAL_SCORE", 0);
         scoreTextView.setText(String.format("Score: %d", finalScore));
+
+        if(!User.username.isEmpty()) {
+            Log.i("MyAppTag", User.username + " " + User.difficulty + " " + finalScore);
+            // Создаем экземпляр DatabaseHelper
+            DatabaseHelper databaseHelper = new DatabaseHelper();
+
+            // Обновляем результат игрока
+            databaseHelper.updateUserScore(User.username, User.difficulty, finalScore);
+        }
+
+
 
 
     }

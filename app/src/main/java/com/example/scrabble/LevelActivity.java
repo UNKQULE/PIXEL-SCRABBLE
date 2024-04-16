@@ -23,6 +23,15 @@ public class LevelActivity extends AppCompatActivity {
     }
 
     private void startGame(int seconds) {
+        if(seconds == 300) {
+            User.difficulty = "easy";
+        }
+        if(seconds == 180) {
+            User.difficulty = "medium";
+        }
+        if(seconds == 90) {
+            User.difficulty = "hard";
+        }
         Intent intent = new Intent(LevelActivity.this, GameActivity.class);
         intent.putExtra("TIME_LIMIT", seconds);
         startActivity(intent);
