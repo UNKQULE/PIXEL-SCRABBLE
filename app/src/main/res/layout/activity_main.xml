@@ -13,12 +13,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="160dp"
         android:layout_marginEnd="0dp"
-        android:hint="@string/nickname"
+        android:hint="ENTER YOUR NICKNAME"
         android:inputType="textPersonName"
+        android:minHeight="48dp"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
-        android:textSize="30sp"/>
+        android:textSize="20dp" />
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="70sp"
+            android:textSize="55dp"
             android:textColor="@color/black"
             android:text="@string/play"
             android:gravity="center"
@@ -61,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="55sp"
+            android:textSize="45dp"
             android:textColor="@color/black"
             android:text="@string/stats"
             android:gravity="center"
@@ -85,9 +86,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="85sp"
+            android:textSize="55dp"
             android:textColor="@color/black"
             android:text="@string/exit"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/button_rules"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40dp"
+            android:textColor="@color/black"
+            android:text="?"
             android:gravity="center"
             android:layout_gravity="center"/>
     </FrameLayout>

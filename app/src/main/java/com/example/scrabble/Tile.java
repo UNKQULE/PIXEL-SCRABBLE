@@ -30,7 +30,7 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста посередине
         letter = new TextView(context);
-        setTextSizeInDp(letter, 46);
+        setTextSizeInDp(letter, 25);
         letter.setTextColor(Color.BLACK);
         letter.setText("");
         letter.setGravity(Gravity.CENTER); // Выравнивание по центру
@@ -43,7 +43,7 @@ public class Tile extends RelativeLayout {
 
         // Создаем TextView для текста в правом верхнем углу
         score = new TextView(context);
-        setTextSizeInDp(score, 20);
+        setTextSizeInDp(score, 12);
         score.setTextColor(Color.BLACK);
         score.setText("");
         RelativeLayout.LayoutParams topRightParams = new RelativeLayout.LayoutParams(

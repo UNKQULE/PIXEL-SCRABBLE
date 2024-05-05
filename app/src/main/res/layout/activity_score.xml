@@ -10,9 +10,9 @@
         android:id="@+id/score_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="55sp"
+        android:textSize="40dp"
         android:textColor="@color/white"
-        android:text="@string/score"
+        android:text="YOUR SCORE"
         android:layout_marginBottom="24dp" />
 
     <FrameLayout
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="65sp"
+            android:textSize="55dp"
             android:textColor="@color/black"
             android:text="@string/play_again" />
     </FrameLayout>

@@ -4,47 +4,84 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_image">
 
-    <ImageButton
-        android:id="@+id/easy"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+    <FrameLayout
+        android:id="@+id/easy_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="250dp"
-        android:adjustViewBounds="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/easy"
-        android:scaleType="centerInside"
-        android:src="@drawable/easy_btn_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Кнопка Medium -->
-    <ImageButton
-        android:id="@+id/medium"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="16dp"
-        android:adjustViewBounds="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/medium"
-        android:scaleType="centerInside"
-        android:src="@drawable/medium_btn_image"
-        app:layout_constraintTop_toBottomOf="@id/easy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <ImageButton
+            android:id="@+id/easy"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"/>
 
-    <!-- Кнопка Hard -->
-    <ImageButton
-        android:id="@+id/hard"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="55dp"
+            android:textColor="@color/black"
+            android:text="EASY"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/medium_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:adjustViewBounds="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/hard"
-        android:scaleType="centerInside"
-        android:src="@drawable/hard_btn_image"
-        app:layout_constraintTop_toBottomOf="@id/medium"
+        app:layout_constraintTop_toBottomOf="@id/easy_frame"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/medium"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="38dp"
+            android:textColor="@color/black"
+            android:text="MEDIUM"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/hard_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/medium_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/hard"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:background="@drawable/empty_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="55dp"
+            android:textColor="@color/black"
+            android:text="HARD"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

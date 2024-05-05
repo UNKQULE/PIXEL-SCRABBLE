@@ -27,11 +27,13 @@ public class MainActivity extends Activity {
         ImageButton playButton = findViewById(R.id.button_play);
         ImageButton statsButton = findViewById(R.id.button_stats);
         ImageButton exitButton = findViewById(R.id.button_exit);
+        ImageButton rulesButton = findViewById(R.id.button_rules);
         editTextNickname = findViewById(R.id.edittext_nickname);
 
         playButton.setOnClickListener(v -> startGame());
         statsButton.setOnClickListener(v -> showStats());
         exitButton.setOnClickListener(v -> finish());
+        rulesButton.setOnClickListener(v -> showRules());
 
         loadNickname();
 
@@ -56,6 +58,11 @@ public class MainActivity extends Activity {
 
     private void showStats() {
         Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+        startActivity(intent);
+    }
+
+    private void showRules() {
+        Intent intent = new Intent(MainActivity.this, RulesActivity.class);
         startActivity(intent);
     }
 

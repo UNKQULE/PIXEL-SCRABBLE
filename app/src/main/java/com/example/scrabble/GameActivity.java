@@ -80,7 +80,7 @@ public class GameActivity extends AppCompatActivity {
         start = true;
         setContentView(R.layout.activity_game);
         TextView scoreTextView = findViewById(R.id.scoreTextView);
-        scoreTextView.setText("Score ");
+        scoreTextView.setText("SCORE ");
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gameboard = gridLayout;
         initializeBoard(gridLayout);
@@ -260,7 +260,7 @@ public class GameActivity extends AppCompatActivity {
                 Game.endTurn();
                 placedTilesCount = 0;
                 finalScore += getScore();
-                scoreTextView.setText("Score " + finalScore);
+                scoreTextView.setText("SCORE " + finalScore);
                 for (Tile handTile : handTiles) {
                     if (!handTile.isShown()) {
                         Pair<Character, String> tileValues = Game.getRandomChar();
@@ -323,6 +323,7 @@ public class GameActivity extends AppCompatActivity {
 
             if (prevSelectedHandTileId != -1) {
                 findViewById(prevSelectedHandTileId).setVisibility(View.GONE);
+                setPrevTileDefaultSize();
             }
             selectedChar = '0';
             placedTilesCount++;
@@ -407,6 +408,17 @@ public class GameActivity extends AppCompatActivity {
 
             tile.setLayoutParams(layoutParams);
             prevSelectedHandTileId = tile.getId();
+        }
+    }
+
+    private void setPrevTileDefaultSize() {
+        if(prevSelectedHandTileId != -1) {
+            Tile prevSelectedTile = findViewById(prevSelectedHandTileId);
+            ViewGroup.LayoutParams prevLayoutParams = prevSelectedTile.getLayoutParams();
+            prevLayoutParams.width = (int) (prevSelectedTile.getWidth() / 1.2);
+            prevLayoutParams.height = (int) (prevSelectedTile.getHeight() / 1.2);
+            prevSelectedTile.setLayoutParams(prevLayoutParams);
+            prevSelectedHandTileId = -1;
         }
     }
 

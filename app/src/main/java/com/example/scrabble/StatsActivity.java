@@ -1,5 +1,6 @@
 package com.example.scrabble;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,9 @@ public class StatsActivity extends AppCompatActivity {
                 filter = "easy";
                 LeaderboardAdapter adapter = new LeaderboardAdapter(users);
                 recyclerView.setAdapter(adapter);
+                easyScoreFilter.setTextColor(Color.parseColor("#bab661"));
+                mediumScoreFilter.setTextColor(Color.WHITE);
+                hardScoreFilter.setTextColor(Color.WHITE);
             }
 
             @Override
@@ -70,6 +74,9 @@ public class StatsActivity extends AppCompatActivity {
                 filter = "medium";
                 LeaderboardAdapter adapter = new LeaderboardAdapter(users);
                 recyclerView.setAdapter(adapter);
+                mediumScoreFilter.setTextColor(Color.parseColor("#bab661"));
+                easyScoreFilter.setTextColor(Color.WHITE);
+                hardScoreFilter.setTextColor(Color.WHITE);
             }
 
             @Override
@@ -84,6 +91,9 @@ public class StatsActivity extends AppCompatActivity {
                 filter = "hard";
                 LeaderboardAdapter adapter = new LeaderboardAdapter(users);
                 recyclerView.setAdapter(adapter);
+                hardScoreFilter.setTextColor(Color.parseColor("#bab661"));
+                mediumScoreFilter.setTextColor(Color.WHITE);
+                easyScoreFilter.setTextColor(Color.WHITE);
             }
 
             @Override

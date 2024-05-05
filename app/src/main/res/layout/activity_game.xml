@@ -21,9 +21,9 @@
             android:id="@+id/timerTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="15dp"
             android:textColor="#FFFFFF"
-            android:text="@string/timer"
+            android:text="TIMER"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -31,9 +31,9 @@
             android:id="@+id/scoreTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="15dp"
             android:textColor="#FFFFFF"
-            android:text="Score"
+            android:text="SCORE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
